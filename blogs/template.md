@@ -1,17 +1,12 @@
 ---
-title: Front Matter
+title: 啥都试试看
 date: '2022-05-13 08:00:00'
 sidebar: 'auto'
-categories:
- - Front
- - Matter
-tags:
- - f
- - m
 # keys:
 #  - '123456'
 publish: true
 ---
+
 
 这里的内容会被显示成摘要。
 
@@ -22,6 +17,7 @@ publish: true
 
 这里是文章的正文。
 
+![asuka](./images/asuka.png)
 
 
 
