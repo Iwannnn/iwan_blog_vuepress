@@ -112,6 +112,11 @@ import { getOneColor } from "@theme/helpers/other";
 import { useInstance } from "@theme/helpers/composable";
 
 export default defineComponent({
+    data() {
+        return {
+            bgIndex: 1,
+        };
+    },
     components: {
         NoteAbstract,
         TagList,
@@ -137,9 +142,12 @@ export default defineComponent({
         );
 
         const bgImageStyle = computed(() => {
-            const url = instance.$frontmatter.bgImage
-                ? instance.$withBase(instance.$frontmatter.bgImage)
-                : require("../../images/bg.svg");
+            // const url = instance.$frontmatter.bgImage
+            //     ? instance.$withBase(instance.$frontmatter.bgImage)
+            //     : require("../../images/bg.svg");
+            const url = require("../../images/bg/" +
+                Math.floor(Math.random() * 11 + 1) +
+                ".png");
 
             const initBgImageStyle = {
                 textAlign: "center",
