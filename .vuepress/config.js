@@ -160,7 +160,7 @@ module.exports = {
 				showIcon: "/favicon.ico",
 				showText: "摇曳露营是神!",
 				hideIcon: "/failure.ico",
-				hideText: "去完成你是使命吧!El Psy Kongroo.",
+				hideText: "El Psy Kongroo.",
 				recoverTime: 2000
 			}
 		],

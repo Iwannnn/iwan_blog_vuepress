@@ -1,37 +1,19 @@
 <template>
-  <div>
-    <reco-icon
-      v-if="pageInfo.frontmatter.author || $themeConfig.author"
-      icon="reco-account"
-    >
-      <span>{{ pageInfo.frontmatter.author || $themeConfig.author }}</span>
-    </reco-icon>
-    <reco-icon
-      v-if="pageInfo.frontmatter.date"
-      icon="reco-date"
-    >
-      <span>{{ formatDateValue(pageInfo.frontmatter.date) }}</span>
-    </reco-icon>
-    <reco-icon
-      v-if="showAccessNumber === true"
-      icon="reco-eye"
-    >
-      <AccessNumber :idVal="pageInfo.path" :numStyle="numStyle" />
-    </reco-icon>
-    <reco-icon
-      v-if="pageInfo.frontmatter.tags"
-      icon="reco-tag"
-      class="tags"
-    >
-      <span
-        v-for="(subItem, subIndex) in pageInfo.frontmatter.tags"
-        :key="subIndex"
-        class="tag-item"
-        :class="{ 'active': currentTag == subItem }"
-        @click.stop="goTags(subItem)"
-      >{{subItem}}</span>
-    </reco-icon>
-  </div>
+	<div>
+		<reco-icon v-if="pageInfo.frontmatter.author || $themeConfig.author" icon="reco-account">
+			<span>{{ pageInfo.frontmatter.author || $themeConfig.author }}</span>
+		</reco-icon>
+		<reco-icon v-if="pageInfo.frontmatter.date" icon="reco-date">
+			<span>{{ formatDateValue(pageInfo.frontmatter.date) }}</span>
+		</reco-icon>
+		<reco-icon v-if="showAccessNumber === true" icon="reco-eye">
+			<AccessNumber :idVal="pageInfo.path" :numStyle="numStyle" />
+		</reco-icon>
+		<reco-icon v-if="pageInfo.frontmatter.tags" icon="reco-tag" class="tags">
+			<span v-for="(subItem, subIndex) in pageInfo.frontmatter.tags" :key="subIndex" class="tag-item"
+				:class="{ 'active': currentTag == subItem }" @click.stop="goTags(subItem)">{{ subItem }}</span>
+		</reco-icon>
+	</div>
 </template>
 
 <script>
@@ -40,45 +22,45 @@ import { RecoIcon } from '@vuepress-reco/core/lib/components'
 import { useInstance } from '@theme/helpers/composable'
 
 export default defineComponent({
-  components: { RecoIcon },
-  props: {
-    pageInfo: {
-      type: Object,
-      default () {
-        return {}
-      }
-    },
-    currentTag: {
-      type: String,
-      default: ''
-    },
-    showAccessNumber: {
-      type: Boolean,
-      default: false
-    }
-  },
+	components: { RecoIcon },
+	props: {
+		pageInfo: {
+			type: Object,
+			default() {
+				return {}
+			}
+		},
+		currentTag: {
+			type: String,
+			default: ''
+		},
+		showAccessNumber: {
+			type: Boolean,
+			default: true
+		}
+	},
 
-  setup (props, ctx) {
-    const instance = useInstance()
+	setup(props, ctx) {
+		const instance = useInstance()
 
-    const numStyle = {
-      fontSize: '.9rem',
-      fontWeight: 'normal',
-      color: '#999'
-    }
+		const numStyle = {
+			fontSize: '.9rem',
+			fontWeight: 'normal',
+			color: '#999'
+		}
 
-    const goTags = (tag) => {
-      if (instance.$route.path !== `/tag/${tag}/`) {
-        instance.$router.push({ path: `/tag/${tag}/` })
-      }
-    }
+		const goTags = (tag) => {
+			if (instance.$route.path !== `/tag/${tag}/`) {
+				instance.$router.push({ path: `/tag/${tag}/` })
+			}
+		}
 
-    const formatDateValue = (value) => {
-      return new Intl.DateTimeFormat(instance.$lang).format(new Date(value))
-    }
+		const formatDateValue = (value) => {
+			return new Intl.DateTimeFormat(instance.$lang).format(new Date(value))
+		}
 
-    return { numStyle, goTags, formatDateValue }
-  }
+		return { numStyle, goTags, formatDateValue }
+	}
 })
 </script>
 
