@@ -47,6 +47,10 @@ module.exports = {
 					{
 						"text": "anime",
 						"link": "/docs/anime/"
+					},
+					{
+						"text": "考研！",
+						"link": "/docs/postgraduate/"
 					}
 				]
 			},
@@ -72,6 +76,11 @@ module.exports = {
 		"sidebar": {
 			"/docs/anime/": [
 				"",
+				"202204.md"
+			],
+			"/docs/postgraduate/": [
+				"",
+				"202205.md"
 			]
 		},
 		"type": "blog",
@@ -149,9 +158,9 @@ module.exports = {
 			"dynamic-title",
 			{
 				showIcon: "/favicon.ico",
-				showText: "摇曳露营是神！",
+				showText: "摇曳露营是神!",
 				hideIcon: "/failure.ico",
-				hideText: "El Psy Kongroo",
+				hideText: "去完成你是使命吧!El Psy Kongroo.",
 				recoverTime: 2000
 			}
 		],
@@ -162,6 +171,7 @@ module.exports = {
 			}
 		}],
 		['meting', {
+			metingApi: "https://api.vlssu.com/meting/",
 			meting: {
 				auto: "https://music.163.com/#/playlist?id=369312229"
 			},
@@ -181,7 +191,7 @@ module.exports = {
 				// 初始音量
 				volume: 0.1,
 				// 关闭歌词显示
-				lrcType: 0
+				lrcType: 0,
 			},
 			mobile: {
 				// 手机端去掉cover图
