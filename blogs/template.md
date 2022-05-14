@@ -3,7 +3,7 @@ title: 啥都试试看
 date: '2022-05-13 08:00:00'
 sidebar: 'auto'
 categories:
-	- test
+	- 前端
 # keys:
 #  - '123456'
 publish: true
