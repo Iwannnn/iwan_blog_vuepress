@@ -87,7 +87,7 @@ module.exports = {
 		"blogConfig": {
 			"category": {
 				"location": 2,
-				"text": "克里斯汀娜的分类"
+				"text": "克里斯蒂娜的分类"
 			},
 			"tag": {
 				"location": 3,
