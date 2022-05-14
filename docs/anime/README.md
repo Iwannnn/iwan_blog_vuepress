@@ -1,6 +1,6 @@
 ---
 
-title: anime
+title: 新番总结
 date: 2022-01-01
 cover: /images/school.jpg	
 ---
@@ -9,3 +9,4 @@ cover: /images/school.jpg
 
 <!-- more -->
 
+好喜欢美少女o
