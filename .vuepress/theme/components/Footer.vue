@@ -21,7 +21,7 @@
 				{{ new Date().getFullYear() }}
 			</a>
 		</span>
-		<span>
+		<span v-if="showAccessNumber">
 			<reco-icon icon="reco-eye" />
 			<AccessNumber idVal="/" />
 		</span>
