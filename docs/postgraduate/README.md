@@ -1,7 +1,7 @@
 ---
 
 title: 考研随便记一记
-date: 2022-05-13
+date: 2022-05-01
 cover: /images/miku.jpg
 ---
 
