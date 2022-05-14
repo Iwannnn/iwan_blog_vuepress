@@ -31,7 +31,13 @@ module.exports = {
 			"src": "/js/MouseClickEffect.js"
 		}]
 	],
+	// theme: "reco",
 	"themeConfig": {
+		// //评论
+		// "valineConfig": {
+		// 	appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
+		// 	appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
+		// },
 		//导航栏
 		nav: [
 			{
@@ -97,11 +103,6 @@ module.exports = {
 		//友链
 		friendLink: [
 		],
-		//评论
-		valineConfig: {
-			appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
-			appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
-		},
 		// 密钥
 		"logo": "/logo.png",
 		"search": true,
@@ -192,7 +193,7 @@ module.exports = {
 				// 歌曲栏折叠
 				listFolded: true,
 				// 颜色
-				theme: '#f9bcdd',
+				theme: '#39C5BB',
 				// 播放顺序为随机
 				order: 'random',
 				// 初始音量
@@ -203,6 +204,13 @@ module.exports = {
 			mobile: {
 				// 手机端去掉cover图
 				cover: false,
+			}
+		}],
+		['@vuepress-reco/comments', {
+			solution: 'valine',
+			options: {
+				appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
+				appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
 			}
 		}],
 		[
