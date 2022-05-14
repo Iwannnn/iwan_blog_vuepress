@@ -2,8 +2,8 @@
 title: 啥都试试看
 date: '2022-05-13 08:00:00'
 sidebar: 'auto'
-categories:
-	- 前端
+tags:
+	- Vue
 keys:
  - 'c283fa74cfc09ab57db339551bcc6e4d'
 publish: true

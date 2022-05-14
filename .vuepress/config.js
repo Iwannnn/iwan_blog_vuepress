@@ -113,6 +113,14 @@ module.exports = {
 	"markdown": {
 		"lineNumbers": true
 	},
+	configureWebpack: {
+		resolve: {
+			alias: {
+				'@docs': 'docs',
+				'@blog': 'blogs'
+			}
+		}
+	},
 	plugins: [
 		[
 			"@vuepress-reco/vuepress-plugin-kan-ban-niang",
