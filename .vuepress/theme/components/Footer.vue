@@ -54,6 +54,7 @@ export default defineComponent({
 			const vc = valineLocalConfig || valineConfig;
 
 			return vc && vc.visitor != false;
+			// return true;
 		});
 		return { version, showAccessNumber };
 	},

@@ -33,7 +33,7 @@ module.exports = {
 	],
 	"themeConfig": {
 		//导航栏
-		"nav": [
+		nav: [
 			{
 				"text": "可能是真实的首页",
 				"link": "/",
@@ -73,7 +73,7 @@ module.exports = {
 		],
 		//侧边栏
 		subSidebar: 'auto',
-		"sidebar": {
+		sidebar: {
 			"/docs/anime/": [
 				"",
 				"202204.md"
@@ -83,8 +83,8 @@ module.exports = {
 				"202205.md"
 			]
 		},
-		"type": "blog",
-		"blogConfig": {
+		type: "blog",
+		blogConfig: {
 			"category": {
 				"location": 2,
 				"text": "克里斯蒂娜的分类"
@@ -94,8 +94,14 @@ module.exports = {
 				"text": "好想要露营的标签"
 			}
 		},
-		"friendLink": [
+		//友链
+		friendLink: [
 		],
+		//评论
+		valineConfig: {
+			appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
+			appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
+		},
 		// 密钥
 		"logo": "/logo.png",
 		"search": true,
@@ -136,14 +142,6 @@ module.exports = {
 					zIndex: 99999
 				}
 			}
-		],
-		['@vuepress-reco/comments', {
-			solution: 'valine',
-			options: {
-				appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
-				appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
-			}
-		}
 		],
 		['@vuepress-reco/vuepress-plugin-bulletin-popover', {
 			width: '300px', // 默认 260px
