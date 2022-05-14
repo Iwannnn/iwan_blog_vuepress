@@ -96,6 +96,7 @@ module.exports = {
 		},
 		"friendLink": [
 		],
+		// 密钥
 		"logo": "/logo.png",
 		"search": true,
 		"searchMaxSuggestions": 10,
