@@ -6,7 +6,7 @@ cover: /images/covers/school.jpg
 categories:
  - acgn
 
-sticky: true
+# sticky: true
 ---
 
 随便写写自己想看的，喜欢看的。
