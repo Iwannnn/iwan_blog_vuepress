@@ -1,6 +1,4 @@
 ---
 home: true
-heroText: 
-tagline: 
 
 ---
