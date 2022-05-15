@@ -5,6 +5,8 @@ date: 2022-05-01
 cover: /images/covers/miku.jpg
 categories:
  - 考研
+
+sticky: true
 ---
 
 日子这么长，随便写点以后看可能吧。
