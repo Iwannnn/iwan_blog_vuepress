@@ -1,5 +1,5 @@
 module.exports = {
-	"title": "Iwan blog",
+	"title": "熊猫圈里的老鼠屎",
 	"description": "少年时光里的青春幻影",
 	"dest": "public",
 	//额外的需要被注入到当前页面的 HTML <head> 中的标签
