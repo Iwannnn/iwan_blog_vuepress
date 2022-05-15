@@ -9,7 +9,7 @@ tags:
 cover: /images/covers/lina.jpg
 ---
 
-利用```SpringBoot,SpringSecurity,vue,redies```实现一个带有token验证的登录功能
+实现一个带有token验证的登录功能
 
 <!-- more -->
 
