@@ -1,5 +1,5 @@
 ---
 home: true
-heroText: 
-tagline: 
+heroText: ""
+tagline: ""
 ---
