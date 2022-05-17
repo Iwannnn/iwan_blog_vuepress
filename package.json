@@ -18,5 +18,9 @@
 	},
 	"description": "",
 	"main": "index.js",
-	"license": "MIT"
+	"license": "MIT",
+	"dependencies": {
+		"@vuepress-reco/vuepress-plugin-loading-page": "^1.6.0",
+		"@vuepress-reco/vuepress-plugin-pagation": "^1.6.0"
+	}
 }

@@ -197,11 +197,11 @@ module.exports = {
 		// }],
 		[
 			"@vuepress/medium-zoom", {
-				selector: 'img.zoom-custom-imgs',
+				selector: '.theme-reco-content :not(a) > img',
 				// medium-zoom options here
 				// See: https://github.com/francoischalifour/medium-zoom#options
 				options: {
-					margin: 16
+					margin: 16,
 				}
 			}
 		],
@@ -241,5 +241,7 @@ module.exports = {
 				buttonText: "刷新"
 			}
 		}],
+		['@vuepress-reco/vuepress-plugin-pagation', {}],
+		['@vuepress-reco/vuepress-plugin-loading-page', {}]
 	]
 }
