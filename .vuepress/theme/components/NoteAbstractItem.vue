@@ -12,7 +12,7 @@
 			<div class="abstract" v-html="item.excerpt"></div>
 		</div>
 		<div>
-			<PageInfo :pageInfo="item" :currentTag="currentTag"> </PageInfo>
+			<PageInfo :pageInfo="item" :showAccessNumber="true" :currentTag="currentTag"> </PageInfo>
 		</div>
 	</div>
 </template>

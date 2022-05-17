@@ -31,13 +31,13 @@ module.exports = {
 			"src": "/js/MouseClickEffect.js"
 		}]
 	],
-	// theme: "reco",
 	"themeConfig": {
-		// //评论
-		// "valineConfig": {
-		// 	appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
-		// 	appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
-		// },
+		//评论
+		"valineConfig": {
+			appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
+			appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
+			visitor: true,
+		},
 		//导航栏
 		nav: [
 			{
@@ -188,13 +188,13 @@ module.exports = {
 				cover: false,
 			}
 		}],
-		['@vuepress-reco/comments', {
-			solution: 'valine',
-			options: {
-				appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
-				appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
-			}
-		}],
+		// ['@vuepress-reco/comments', {
+		// 	solution: 'valine',
+		// 	options: {
+		// 		appId: 'KV4B0lMPrBweuLu48EFtpmIw-gzGzoHsz',// your appId
+		// 		appKey: 'cSa0NiFSITf3WFzMtbtOVn4c', // your appKey
+		// 	}
+		// }],
 		[
 			"@vuepress/medium-zoom", {
 				selector: 'img.zoom-custom-imgs',

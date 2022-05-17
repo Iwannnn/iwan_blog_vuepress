@@ -6,7 +6,7 @@
 		<reco-icon v-if="pageInfo.frontmatter.date" icon="reco-date">
 			<span>{{ formatDateValue(pageInfo.frontmatter.date) }}</span>
 		</reco-icon>
-		<reco-icon v-if="showAccessNumber === true" icon="reco-eye">
+		<reco-icon v-if="showAccessNumber" icon="reco-eye">
 			<AccessNumber :idVal="pageInfo.path" :numStyle="numStyle" />
 		</reco-icon>
 		<reco-icon v-if="pageInfo.frontmatter.tags" icon="reco-tag" class="tags">
@@ -36,7 +36,7 @@ export default defineComponent({
 		},
 		showAccessNumber: {
 			type: Boolean,
-			default: true
+			default: false
 		}
 	},
 
