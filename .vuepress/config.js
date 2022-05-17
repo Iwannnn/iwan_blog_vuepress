@@ -233,6 +233,13 @@ module.exports = {
 			},
 			ribbonShow: false, //  点击彩带  true显示  false为不显示
 			ribbonAnimationShow: true  // 滑动彩带
-		}]
+		}],
+		['@vuepress/pwa', {
+			serviceWorker: true,
+			updatePopup: {
+				message: "发现新内容可用",
+				buttonText: "刷新"
+			}
+		}],
 	]
 }

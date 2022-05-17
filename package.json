@@ -8,6 +8,7 @@
 	"devDependencies": {
 		"@vuepress-reco/vuepress-plugin-kan-ban-niang": "^1.0.5",
 		"@vuepress/plugin-medium-zoom": "^1.9.7",
+		"@vuepress/plugin-pwa": "^1.9.7",
 		"vuepress": "^1.9.7",
 		"vuepress-plugin-dynamic-title": "^1.0.0",
 		"vuepress-plugin-meting": "^0.3.1",
