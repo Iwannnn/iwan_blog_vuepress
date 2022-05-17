@@ -51,7 +51,6 @@ export default defineComponent({
 				$themeLocaleConfig: { valineConfig: valineLocalConfig },
 			} = instance;
 			const vc = valineLocalConfig || valineConfig;
-			console.log(vc)
 			return vc && vc.visitor != false;
 		});
 		return { version, showAccessNumber };
