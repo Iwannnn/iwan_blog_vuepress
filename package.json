@@ -21,6 +21,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@vuepress-reco/vuepress-plugin-loading-page": "^1.6.0",
-		"@vuepress-reco/vuepress-plugin-pagation": "^1.6.0"
+		"@vuepress-reco/vuepress-plugin-pagation": "^1.6.0",
+		"markdown-it-katex": "^2.0.3"
 	}
 }
