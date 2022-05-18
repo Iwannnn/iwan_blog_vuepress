@@ -158,7 +158,7 @@ nt bst_delete(bst_node *p) {
 
 由于新的数据的插入导致不平衡，首先找到里插入节点最近的平衡因子的绝对值为$2$的节点```unblance_root```，再对以```unblance_root```为根节点的子树，进行转圈圈。
 
-:::warnning
+:::warning
 每次调整的对象都是最小的不平衡子树！
 :::
 
