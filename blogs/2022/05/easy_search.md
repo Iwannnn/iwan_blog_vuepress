@@ -26,7 +26,7 @@ cover: /images/covers/flcl.jpg
 
 就一个个找过去，找到最后没找到返回失败。利用```哨兵```简化代码。
 
-**成功时的```ASL=(1+n)/2```,失败时```ASL=1+n```**
+**成功时的$ASL=\frac{1+n}{n}$,失败时$ASL=1+n$**
 
 
 ```c
@@ -47,7 +47,7 @@ int seq_search(seq_table seq_table, int key) {
 
 关键字有序的就可以提前跳出循环，确认找不到了。
 
-**失败时```ASL=n/2+n/(1+n)```**
+**失败时$ASL=\frac{n}{2+n}+\frac{n}{1+n}$**
 
 
 ### 折半查找
