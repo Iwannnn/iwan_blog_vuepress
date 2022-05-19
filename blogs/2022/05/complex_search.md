@@ -406,17 +406,16 @@ void insert_case5(node *n){
 
 还有一种比较简单的情况，删除一个黑色节点，他的儿子节点是红色，如果直接上儿子节点上来的话，会破坏性质5黑色的少了，还可能红红相连破坏性质4，直接把这个红色节点变成黑色就没有问题了。
 
-复杂的是，如果删除一个黑色节点，他的儿子节点也是黑色。这个是他的两个儿子节点都得是是叶子（```NIL```）节点，否则会破坏性质5，通过非叶子节点到达叶子节点黑色节点数为1，而直接到达叶子节点黑叔节点数为1。
-
-首先需要把被删除的节点替换成儿子节点```N```，他的兄弟则为```S```，```P```为被删除节点，```$S_L$```和```$S_R$```分别为```S```的左右儿子。
+复杂的是，如果删除一个黑色节点，他的儿子节点也是黑色。
+首先需要把被删除的节点替换成儿子节点```N```，他的兄弟则为```S```，```P```为```N```的父亲即被删除节点的父亲，$S_L$和$S_R$分别为```S```的左右儿子。
 
 ```c
 node* get_s(node *n){
-	if(n == n->parent->lchild){
-		return n->parent->rchild;
-	}else{
-		return n->parent->lchild;
-	}
+  if(n == n->parent->lchild){
+    return n->parent->rchild;
+  }else{
+    return n->parent->lchild;
+  }
 }
 ```
 
@@ -424,39 +423,39 @@ node* get_s(node *n){
 
 ```c
 void delete_node(node *n){
-	//删除只有一个儿子的节点
-	node *child = is_leaf(n->rchild) ? n->lchild : n->lchild;
-	replace(child,n); //使用儿子节点替换删除节点
-	if(n->color == BLACK){
-		if(child->color == RED){
-			child->color = BLACK;
-		}else{
-			delete_case1(child);
-		}
-	}
-	free(n);
+	//n最多只有一个儿子的节点
+  node *child = is_leaf(n->rchild) ? n->lchild : n->lchild; //找出存在的那一部分的节点
+  replace(child,n); //使用儿子节点替换删除节点
+  if(n->color == BLACK){ //删除节点节点是黑色
+    if(child->color == RED){ //替换节点是红色
+      child->color = BLACK;
+    }else{ //替换节点是黑色，会产生黑色节点少一个，特殊处理
+      delete_case1(child);
+    }		
+  }
+  free(n);
 }
 ```
 
-```N```和他的父亲都是黑色，产出父亲导致的性质5错误，需要重新平衡树。
+```N```和他的初始的被删除的父亲都是黑色，删除父亲导致的性质5错误，需要重新平衡树。
 
 :::tip
 ```n```为替换后的节点
 :::
 
-**case 1** ```N```是新根，他没有孩子，从所有路径删除了一个黑色节点，没有破坏性质5；
+**case 1** 删完后，```N```是新根，他没有父亲，从所有路径删除了一个黑色节点，没有破坏性质5；
 
 
 ```c
 void delete_case1(node *n){
-	if(n->parent != NULL){
-		delete_case2(n);
-	}
+  if(n->parent != NULL){
+    delete_case2(n);
+  }
 }
 ```
 
 :::tip
-256中假定```N```是```P```的左孩子
+case 256中假定```N```是```P```的左孩子
 :::
 
 **case 2** ```S```为红色，对```P```进行左旋，将```S```变为```N```的祖父，对调```P```与```S```的颜色，路径上黑色节点数没变，保持性质5，N有了一个红色的```P```和黑色的```G```
@@ -558,6 +557,460 @@ void delete_case6(node* n){
 	}
 }
 ```
+
+### 效率分析
+
+> n个节点节点的红黑树高度是$Ologn$
+
+- ```h(v)```节点```v```的高度
+- ```bh(v)```节点```v```的黑色节点高度
+
+节点```v```至少右$2^{h(v)}-1$个内部节点
+
+
+
+
+### Cpp实现代码
+
+看玩了代码，感觉清晰了很多。
+
+> Talk is cheap, show me the code.
+
+```cpp
+#define BLACK 1
+#define RED 0
+#include <iostream>
+
+using namespace std;
+
+class bst {
+private:
+  struct Node {
+    int value;
+    bool color;
+    Node *leftTree, *rightTree, *parent;
+
+    Node() : value(0), color(RED), leftTree(NULL), rightTree(NULL), parent(NULL) {
+    }
+
+    Node *grandparent() { //获取爷节点
+      if (parent == NULL) {
+        return NULL;
+      }
+      return parent->parent;
+    }
+
+    Node *uncle() { //获取叔节点
+      if (grandparent() == NULL) {
+        return NULL;
+      }
+      if (parent == grandparent()->rightTree)
+        return grandparent()->leftTree;
+      else
+        return grandparent()->rightTree;
+    }
+
+    Node *sibling() { //获取兄弟节点
+      if (parent->leftTree == this)
+        return parent->rightTree;
+      else
+        return parent->leftTree;
+    }
+  };
+
+  void rotate_right(Node *p) { //右旋
+
+    // 获取需要的祖父，父节点，需要被换位置右子树
+    Node *gp = p->grandparent();
+    Node *fa = p->parent;
+    Node *y = p->rightTree;
+
+    // 将当前节点的右键点连接带父节点的左节点（当前节点的位置）
+    fa->leftTree = y;
+
+    // 修改y的父节点
+    if (y != NIL) y->parent = fa;
+
+    // 向右旋转
+    p->rightTree = fa;
+    fa->parent = p;
+
+    // 更改根节点
+    if (root == fa) root = p;
+
+    // 旋转后更改父节点
+    p->parent = gp;
+
+    // 更改爷节点的孩子节点
+    if (gp != NULL) {
+      if (gp->leftTree == fa)
+        gp->leftTree = p;
+      else
+        gp->rightTree = p;
+    }
+  }
+
+  void rotate_left(Node *p) {
+
+    // 不是很明白这句放在这干嘛，右旋没有
+    if (p->parent == NULL) {
+      root = p;
+      return;
+    }
+
+    // 获取需要的祖父，父节点，需要被换位置左子树
+    Node *gp = p->grandparent();
+    Node *fa = p->parent;
+    Node *y = p->leftTree;
+
+    // 将当前节点的左节点连接带父节点的右节点（当前节点的位置）
+    fa->rightTree = y;
+
+    // 修改y的父节点
+    if (y != NIL) y->parent = fa;
+
+    // 左旋
+    p->leftTree = fa;
+    fa->parent = p;
+
+    // 修改根节点
+    if (root == fa) root = p;
+
+    // 旋转后更改父节点
+    p->parent = gp;
+
+    // 爷节点换儿子辣
+    if (gp != NULL) {
+      if (gp->leftTree == fa)
+        gp->leftTree = p;
+      else
+        gp->rightTree = p;
+    }
+  }
+
+  void inorder(Node *p) { //中序遍历红黑树
+    if (p == NIL) return;
+
+    if (p->leftTree) inorder(p->leftTree);
+
+    cout << p->value << " ";
+
+    if (p->rightTree) inorder(p->rightTree);
+  }
+
+  string outputColor(bool color) { // 输出颜色
+    return color ? "BLACK" : "RED";
+  }
+
+  Node *getSmallestChild(Node *p) { //去最左下角
+    if (p->leftTree == NIL) return p;
+    return getSmallestChild(p->leftTree);
+    // return p->leftTree == NIL ? p : getSmallestChild(p->leftTree);
+  }
+
+  bool delete_child(Node *p, int data) { //递归寻找需要删除节点
+                                         //找出被删的节点
+    if (p->value > data) {
+      if (p->leftTree == NIL) { //没找需要删除的节点
+        return false;
+      }
+      return delete_child(p->leftTree, data);
+    } else if (p->value < data) {
+      if (p->rightTree == NIL) {
+        return false; //没找到需要删除的节点
+      }
+      return delete_child(p->rightTree, data);
+    } else if (p->value == data) {
+      if (p->rightTree == NIL) { //已经满足
+        delete_one_child(p);
+        return true;
+      }
+      Node *smallest = getSmallestChild(p->rightTree); //找到他的直接后继
+      swap(p->value, smallest->value);                 //替换和删除接连
+      delete_one_child(smallest);                      //删除替换节点，替换节点只有可能右右子树
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void delete_one_child(Node *p) {                                        //删除节点
+    Node *child = p->leftTree == NIL ? p->rightTree : p->leftTree;        //获取p的孩子节点
+    if (p->parent == NULL && p->leftTree == NIL && p->rightTree == NIL) { //整个树就只有一个p
+      p = NULL;
+      root = p;
+      return;
+    }
+
+    if (p->parent == NULL) { // p是根节点，直接删了就好了，不影响性质
+      delete p;
+      child->parent = NULL;
+      root = child;
+      root->color = BLACK;
+      return;
+    }
+
+    // 替换p节点
+    if (p->parent->leftTree == p) {
+      p->parent->leftTree = child;
+    } else {
+      p->parent->rightTree = child;
+    }
+    child->parent = p->parent;
+
+    //被删除节点是黑色的，麻烦西麻烦
+    if (p->color == BLACK) {
+      if (child->color == RED) { //替换节点是红色，将红色变成黑色，弥补黑色节点删除问题。
+        child->color = BLACK;
+      } else
+        delete_case(child);
+    }
+
+    delete p;
+  }
+
+  /**
+   * @brief 删除例子，删除的都是黑色节点，先解决简化特例，在解决普遍情况；
+   * case_1：新根
+   * case_2：红色的兄弟节点（父节点，兄弟节点的孩子节点都是黑色）
+   * case_3：全都是黑色节点
+   * case_4：父节点是红色节点（兄第节点一定是黑色节点，兄弟的孩子必须是黑色），转换成父节点是和黑色，兄弟节点是红色，递归产出上去
+   * case_5：兄弟节点是黑色，兄弟节点左/右孩子是红色，旋转，转换成case_6
+   * case_6：兄弟节点的“兄弟方向”孩子节点是红色（兄弟节点一定是黑色），父节点随意
+   * @param p
+   * @return * void
+   *
+   */
+  void delete_case(Node *p) { //替换节点，被替换节点都是黑色，替换后导致少了一个黑色节点
+    if (p->parent == NULL) {  // case_1 p是新根
+      p->color = BLACK;
+      return;
+    }
+
+    // case_2 p的兄弟节点是红色，那么p的父节点一定是黑色
+    // 处理完case_2他还是不平衡的，但没有破坏当前不平衡的状态，但p有了红色的父亲和黑色兄弟
+    // 红色的父亲会比较方便，可以直接和黑色的兄弟换色，
+    if (p->sibling()->color == RED) {
+      //对换p的父亲和兄弟节点的颜色
+      p->parent->color = RED;
+      p->sibling()->color = BLACK;
+
+      // 将兄弟节点忘父节点旋转
+      // p的父节点没变，兄弟节点变成了兄弟节点的左孩子（左旋）或者右孩子（右旋）
+      if (p == p->parent->leftTree)
+        // rotate_left(p->sibling());
+        rotate_left(p->parent);
+      else
+        // rotate_right(p->sibling());
+        rotate_right(p->parent);
+    }
+
+    // 旋转后或者没经过旋转
+    if (p->parent->color == BLACK && p->sibling()->color == BLACK && p->sibling()->leftTree->color == BLACK &&
+        p->sibling()->rightTree->color == BLACK) {
+      // case_3 父节点是黑色，兄弟节点是黑色，兄弟节点的左孩子的，右孩子是黑色
+      //全家都是黑色，很帅气嘛
+
+      //将兄弟节点改成红色，这样以父节点为根节点和红黑树就平衡了，但是父节点对外就整体少了一个黑色节点，所以对父节点递归删除
+      p->sibling()->color = RED;
+      delete_case(p->parent);
+    } else if (p->parent->color == RED && p->sibling()->color == BLACK && p->sibling()->leftTree->color == BLACK &&
+               p->sibling()->rightTree->color == BLACK) {
+      // case_4 父节点是红色，兄弟节点，兄弟节点的孩子都是褐色的
+      // 父兄换色，恢复黑色节点数量一致的性质，也不破坏对外的性质
+      p->sibling()->color = RED;
+      p->parent->color = BLACK;
+    } else {
+
+      if (p->sibling()->color == BLACK) { //黑色的兄弟，但兄弟的汉字颜色不一样了
+        if (p == p->parent->leftTree && p->sibling()->leftTree->color == RED && p->sibling()->rightTree->color == BLACK) {
+          // case_5 兄弟节点在右边，兄弟节点的左节点是红色，右节点是黑色
+          // 将兄弟节点和他的红孩子换个色并且右旋
+          // 兄弟节点就变成了它黑色有孩子，并且路径中的黑色节点书没有变化
+          p->sibling()->color = RED;
+          p->sibling()->leftTree->color = BLACK;
+          rotate_right(p->sibling()->leftTree);
+        } else if (p == p->parent->rightTree && p->sibling()->leftTree->color == BLACK &&
+                   p->sibling()->rightTree->color == RED) {
+          // case_5 兄弟节点在左边，兄弟节点的右节点是红色，左节点是黑色
+          // 将兄弟节点和他的红孩子换个色并且左旋
+          p->sibling()->color = RED;
+          p->sibling()->rightTree->color = BLACK;
+          rotate_left(p->sibling()->rightTree);
+        }
+      }
+
+      // case_6
+      // 兄弟节点是黑色，兄弟节点的“兄弟方向”的孩子是红色，父节点是什么颜色没关系
+
+      // 交换父节点和兄弟节点颜色
+      p->sibling()->color = p->parent->color;
+      p->parent->color = BLACK;
+
+      //将红色节点变成黑色，并且左右旋转
+      //兄弟节点变成根节点，父节点变成兄弟节点的黑色，弥补了删除节点的黑色。
+      //将旋转后的兄弟节点的原本的红色孩子变成黑色，不论兄弟节点（原本父节点）是什么颜色都不破坏心智
+      if (p == p->parent->leftTree) {
+        p->sibling()->rightTree->color = BLACK;
+        rotate_left(p->sibling());
+      } else {
+        p->sibling()->leftTree->color = BLACK;
+        rotate_right(p->sibling());
+      }
+    }
+  }
+
+  // 插入节点
+  void insert(Node *p, int data) {
+    if (p->value >= data) {
+      if (p->leftTree != NIL) //还没倒合适的插入位置
+        insert(p->leftTree, data);
+      else { //到啦
+
+        //初始化节点
+        Node *tmp = new Node();
+        tmp->value = data;
+        tmp->leftTree = tmp->rightTree = NIL;
+        tmp->parent = p;
+        p->leftTree = tmp;
+
+        //插入节点
+        insert_case(tmp);
+      }
+    } else { //在另一边插入
+      if (p->rightTree != NIL)
+        insert(p->rightTree, data);
+      else {
+
+        // 初始化节点
+        Node *tmp = new Node();
+        tmp->value = data;
+        tmp->leftTree = tmp->rightTree = NIL;
+        tmp->parent = p;
+        p->rightTree = tmp;
+
+        // 插入节点
+        insert_case(tmp);
+      }
+    }
+  }
+
+  /**
+   * @brief 插入节点的各种情况 默认插入红色，黑色跟麻烦
+   * case_1 为根节点
+   * case_2 新节点得父节点是黑色，红色随意插入
+   * case_3
+   * case_4
+   * case_5
+   * @param p
+   * @return * void
+   */
+  void insert_case(Node *p) {
+
+    // case_1根节点，改成黑色
+    if (p->parent == NULL) {
+      root = p;
+      p->color = BLACK;
+      return;
+    }
+    if (p->parent->color == RED) {    //父节点为红色
+      if (p->uncle()->color == RED) { // case_3 叔节点也是红色
+        // 更换父叔与爷节点的颜色,不破路径上的黑色节点数一直的心智
+        p->parent->color = p->uncle()->color = BLACK;
+        p->grandparent()->color = RED;
+        // 爷节点为根时破坏了根节点为黑色，不是根节点也可能破坏红色节点不想连，所以递归删除
+        insert_case(p->grandparent());
+      } else {
+        if (p->parent->rightTree == p &&
+            p->grandparent()->leftTree == p->parent) { // case_4 “父节点方向”为左,“插入节点方向”为右
+
+          // 先左旋
+          rotate_left(p);
+          // case_5 将p换到根节点
+          p->color = BLACK;
+          p->parent->color = RED;
+          rotate_right(p);
+        } else if (p->parent->leftTree == p &&
+                   p->grandparent()->rightTree == p->parent) { // case_4“父节点方向”为右,“插入节点方向”为左
+
+          // 先右旋
+          rotate_right(p);
+          // case_5 将p换到根节点
+          p->color = BLACK;
+          p->parent->color = RED;
+          rotate_left(p);
+        } else if (p->parent->leftTree == p &&
+                   p->grandparent()->leftTree == p->parent) { // case_5 “父节点方向”和“插入节点方向”为左
+
+          //互换父节点与爷节的颜色
+          p->parent->color = BLACK;
+          p->grandparent()->color = RED;
+          //右旋 当前根节点为黑色，根的两个子节点为红色，
+          rotate_right(p->parent);
+        } else if (p->parent->rightTree == p &&
+                   p->grandparent()->rightTree == p->parent) { // case_5 “父节点方向”和“插入节点方向”为右
+
+          //互换父节点与爷节的颜色
+          p->parent->color = BLACK;
+          p->grandparent()->color = RED;
+          //左旋 当前根节点为黑色，根的两个子节点为红色，
+          rotate_left(p->parent);
+        }
+      }
+    }
+  }
+
+  void DeleteTree(Node *p) {
+    if (!p || p == NIL) {
+      return;
+    }
+    DeleteTree(p->leftTree);
+    DeleteTree(p->rightTree);
+    delete p;
+  }
+
+public:
+  bst() {
+    NIL = new Node();
+    NIL->color = BLACK;
+    root = NULL;
+  }
+
+  ~bst() {
+    if (root) DeleteTree(root);
+    delete NIL;
+  }
+
+  void inorder() {
+    if (root == NULL) return;
+    inorder(root);
+    cout << endl;
+  }
+
+  void insert(int x) {
+    if (root == NULL) {
+      root = new Node();
+      root->color = BLACK;
+      root->leftTree = root->rightTree = NIL;
+      root->value = x;
+    } else {
+      insert(root, x);
+    }
+  }
+
+  bool delete_value(int data) {
+    return delete_child(root, data);
+  }
+
+private:
+  Node *root, *NIL;
+};
+```
+
+:::tip
+真是难啊啊啊啊啊啊
+:::
 
 ## ```B```树
 
