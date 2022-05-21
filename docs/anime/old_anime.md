@@ -1,9 +1,9 @@
 ---
 title: 补番计划
-data: 2022-05-21
+date: 2022-05-21
+cover: /images/covers/rei.gif
 categories:
  - acgn
-cover: /images/covers/rei.gif
 ---
 
 标记下想看的
