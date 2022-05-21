@@ -78,6 +78,11 @@ module.exports = {
 				"icon": "reco-message",
 				"items": [
 					{
+						"text": "Detail",
+						"link": "https://iwannnn.cn/docs/detail",
+						"icon": "reco-other"
+					},
+					{
 						"text": "GitHub",
 						"link": "https://github.com/Iwannnn",
 						"icon": "reco-github"
@@ -90,7 +95,8 @@ module.exports = {
 		sidebar: {
 			"/docs/anime/": [
 				"",
-				"202204.md"
+				"202204.md",
+				"old_anime.md"
 			],
 			"/docs/postgraduate/": [
 				"",
