@@ -1,7 +1,7 @@
 ---
 
 title: 真的真的想联系我吗
-publish: fasle
+publish: false
 
 ---
 

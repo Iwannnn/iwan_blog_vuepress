@@ -1,6 +1,6 @@
 ---
 
-title: 新番总结
+title: 美少女写一写
 date: 2022-01-01
 cover: /images/covers/school.jpg
 categories:
