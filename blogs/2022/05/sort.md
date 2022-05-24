@@ -220,9 +220,213 @@ void quick_sort(int arr[], int low, int high) {
 TODO:
 ## 选择排序
 
+### 简单的选择排序
+
+简单的排序算法，找出未排序序列的最小值再换一换就好了。
+
+#### code
+
+```c
+void selection_sort(int arr[], int len) {
+  int i, j;
+  for (int i = 1; i < len; ++i) {
+    int min_index = i;
+    for (j = i + 1; j <= len; ++j) {
+      if (arr[j] < arr[min_index]) {
+        min_index = j;
+      }
+    }
+    if (min_index != i) {
+      arr[0] = arr[j];
+      arr[j] = arr[min_index];
+      arr[min_index] = arr[0];
+    }
+  }
+}
+```
+
+#### **效率分析**
+
+**空间复杂度**，$O(1)$
+**时间复杂度**，最情况加不需要进行交换，移动$0$次,最坏情况下移动$3(len-1)$次，比较次数和初始序列无关为$\frac{n(n-1)}{2}$,所以时间复杂度为$O(n^2)$
+
+算法是不稳定的，相等的值先找的会先被标记，还是得看判断符号
+
+### 堆排序
+
+利用堆这个数据结构构建出来的排序算法，堆近似于一个完全二叉树
+:::tip
+堆是一种特别的完全二叉树，给定堆任意节点P和C，若P是C的双亲节点，那么P的值会小于等于（或大于等于）C的值
+:::
+
+堆通常使用数组来是实现的，利用完全二叉树的性质通过下标的访问孩子节点
+
+设一个节点下标为i
+| 节点   | 起始为0               | 起始为1                   |
+| ------ | --------------------- | ------------------------- |
+| 父     | $\lfloor i/2 \rfloor$ | $\lfloor (i-1)/2 \rfloor$ |
+| 左孩子 | $2i+1$                | $2i$                      |
+| 右孩子 | $2i+2$                | $2i+1$$$                  |
+
+
+堆排序的关键是构造初始堆，从第$\lfloor n/2 \rfloor$（下标从1开始）节点开始到第$1$个节点向前构建大顶堆。
+
+堆也支持插入操作，将最新节点放在堆的最后面，对这个新的节点向上执行调整操作
+
+#### code 
+
+
+```c
+void swap(int *a, int *b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+void max_heapify(int arr[], int start, int end) {
+  int parent = start;
+  int child = parent * 2;
+  while (child <= end) {
+    if (child + 1 <= end && arr[child] < arr[child + 1]) { //左孩子和有孩子哪个大
+      ++child;
+    }
+    if (arr[parent] > arr[child]) { //没有交换不会对子树造成影响
+      return;
+    } else {
+      swap(&arr[parent], &arr[child]); //发生交换，纠正对子树产生的影响
+      parent = child;
+      child = parent * 2; //如果下标从0开始那 child = parent * 2 + 1;
+    }
+  }
+}
+
+void heap_sort(int arr[], int len) {
+  int i;
+  //初始化，从下网上初始化大顶堆
+  for (i = len / 2; i > 0; --i) {
+    max_heapify(arr, i, len);
+  }
+  //替换元素，重新构建堆循环
+  for (int i = len; i > 1; --i) {
+    swap(&arr[1], &arr[i]);     //将最大的放到最后
+    max_heapify(arr, 1, i - 1); // arr[1]位置发生变化，重新构建大顶堆
+  }
+}
+```
+#### **效率分析**
+
+**空间复杂度**，$O(1)$
+**时间复杂度**，初始化堆的时间为$O(n)$吗，之后有$n-1$次交换和向下调正测操作，每次调整高度为$log_2i$，所以时间复杂度为$O(nlog_2n)$
+
+算法是不稳定的，可能会将前面的值先换入顶中，在交换之数组末尾
 
 ## 归并排序
 
+基于分治法的思想，逐层排序
+
+这个算法递归实现也可以迭代实现
+
+#### 递归（recursion）的合并操作
+
+1. 申请空间，为两个子序列之和
+2. 申请两个指针，指向两个子序列的头
+3. 比较大小，放入申请空间
+4. 重复3，直至末尾
+5. 将剩余元素放入申请空间
+
+#### 迭代（iteration）的合并操作
+
+1. 将相邻两个元素经行排序形成$\lceil \frac{n}{2} \rceil$个子序列
+2. 重复1，直至序列数为1
+
+
+#### code
+
+```c
+//治
+void conquer(int arr[], int left, int mid, int right, int temp[]) {
+  int i = left, j = mid + 1;
+  int index = 0;
+  while (i <= mid && j <= right) {
+    temp[index++] = arr[i] < arr[j] ? arr[i++] : arr[j++];
+  }
+  index = 0;
+  while (left <= right) {
+    arr[left++] = temp[index++];
+  }
+}
+
+//分
+void divide(int arr[], int left, int right, int temp[]) {
+  if (left < right) {
+    int mid = left + (right - left) / 2;
+    divide(arr, left, mid, temp);
+    divide(arr, mid + 1, right, temp);
+    conquer(arr, left, mid, right, temp);
+  }
+}
+
+void merge_sort(int arr[], int len) {
+  int *temp = (int *)malloc(sizeof(int *) * len);
+  divide(arr, 1, len, temp);
+}
+
+int min(int a, int b) {
+  return a < b ? a : b;
+}
+
+void itera_merge_sort(int arr[], int len) {
+  int *a = arr;
+  int *b = (int *)malloc(sizeof(int *) * len);
+  int seg, start;
+  for (seg = 1; seg < len; seg += seg) {              //分
+    for (start = 1; start <= len; start += 2 * seg) { //治
+      int left = start, mid = min(start + seg, len), right = min(start + 2 * seg, len);
+      int index = left;
+      int start1 = left, end1 = mid;
+      int start2 = mid + 1, end2 = right;
+      while (start1 < end1 && start2 < end2) {
+        b[index++] = a[start1] < a[start2] ? a[start1++] : a[start2++];
+      }
+      while (start1 <= end1) {
+        b[index++] = a[start1++];
+      }
+      while (start2 <= end2) {
+        b[index++] = a[start2++];
+      }
+    }
+    int *temp = a;
+    a = b;
+    b = a;
+  }
+  if (a != arr) {                    //不知道会经过多少次交换哪个数组是指向原先的arr ,若b指向arr
+    for (int i = 0; i <= len; ++i) { //将有序的a的值赋给b
+      b[i] = a[i];
+    }
+    b = a; // b指向a
+  }
+  free(b);
+}
+```
+
+#### **效率分析**
+
+**空间复杂度**，需要用到n个额外空间，$o(n)$
+
+**时间复杂度**，每趟归并时间复杂度为$O(n)$,二路归并总共需要进行$nlog_2n$次归并，所以整体时间复杂度为$O(nlog_2n)$
+
+是稳定的
+
 ## 基数排序
+
+非比较型的整数排序算法，将整数按位数切割成成不同数组，按进制大小进行比较，基数排序的方式可以采用LSD（Least significant digital）或MSD（Most significant digital），LSD的排序方式由键值的最右边开始，而MSD则相反，由键值的最左边开始。
+
+#### **效率分析**
+
+**空间复杂度**，需要有进制个数的额外空间，$O(r)$
+
+**时间复杂度**，整体数据的位数$d$乘上分配所需的$O(n)$加上手机所需的$O(r)$，总共为$O(d(n+r))$
+
+
 
 ## 外部排序
