@@ -1,5 +1,5 @@
 ---
-title: 中规中矩的排序算法
+title: 基础的内部搜索
 date: 2022-05-23
 categories:
  - 数据结构与算法
@@ -427,6 +427,3 @@ void itera_merge_sort(int arr[], int len) {
 
 **时间复杂度**，整体数据的位数$d$乘上分配所需的$O(n)$加上手机所需的$O(r)$，总共为$O(d(n+r))$
 
-
-
-## 外部排序
