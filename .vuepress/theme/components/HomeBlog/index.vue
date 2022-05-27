@@ -1,107 +1,86 @@
 <template>
-    <div class="home-blog">
-        <div class="hero" :style="{ ...bgImageStyle }">
-            <div>
-                <ModuleTransition>
-                    <img
-                        class="hero-img"
-                        v-if="recoShowModule && $frontmatter.heroImage"
-                        :style="heroImageStyle || {}"
-                        :src="$withBase($frontmatter.heroImage)"
-                        alt="hero"
-                    />
-                </ModuleTransition>
+	<div class="home-blog">
+		<div class="hero" :style="{ ...bgImageStyle }">
+			<div>
+				<ModuleTransition>
+					<img class="hero-img" v-if="recoShowModule && $frontmatter.heroImage" :style="heroImageStyle || {}"
+						:src="$withBase($frontmatter.heroImage)" alt="hero" />
+				</ModuleTransition>
 
-                <ModuleTransition delay="0.04">
-                    <h1 v-if="recoShowModule && $frontmatter.heroText !== null">
-                        {{
-                            $frontmatter.heroText ||
-                            $title ||
-                            "vuePress-theme-reco"
-                        }}
-                    </h1>
-                </ModuleTransition>
+				<ModuleTransition delay="0.04">
+					<h1 v-if="recoShowModule && $frontmatter.heroText !== null">
+						{{
+								$frontmatter.heroText ||
+								$title ||
+								"vuePress-theme-reco"
+						}}
+					</h1>
+				</ModuleTransition>
 
-                <ModuleTransition delay="0.08">
-                    <p
-                        v-if="recoShowModule && $frontmatter.tagline !== null"
-                        class="description"
-                    >
-                        {{
-                            $frontmatter.tagline ||
-                            $description ||
-                            "Welcome to your vuePress-theme-reco site"
-                        }}
-                    </p>
-                </ModuleTransition>
-            </div>
-        </div>
+				<ModuleTransition delay="0.08">
+					<p v-if="recoShowModule && $frontmatter.tagline !== null" class="description">
+						{{
+								$frontmatter.tagline ||
+								$description ||
+								"Welcome to your vuePress-theme-reco site"
+						}}
+					</p>
+				</ModuleTransition>
+			</div>
+		</div>
 
-        <ModuleTransition delay="0.16">
-            <div v-show="recoShowModule" class="home-blog-wrapper">
-                <div class="blog-list">
-                    <!-- 博客列表 -->
-                    <note-abstract
-                        :data="$recoPosts"
-                        @paginationChange="paginationChange"
-                    />
-                </div>
-                <div class="info-wrapper">
-                    <PersonalInfo />
-                    <h4>
-                        <reco-icon icon="reco-category" />
-                        {{ $recoLocales.category }}
-                    </h4>
-                    <ul class="category-wrapper">
-                        <li
-                            class="category-item"
-                            v-for="(item, index) in this.$categories.list"
-                            :key="index"
-                        >
-                            <router-link :to="item.path">
-                                <span class="category-name">{{
-                                    item.name
-                                }}</span>
-                                <span
-                                    class="post-num"
-                                    :style="{ backgroundColor: getOneColor() }"
-                                    >{{ item.pages.length }}</span
-                                >
-                            </router-link>
-                        </li>
-                    </ul>
-                    <hr />
-                    <h4 v-if="$tags.list.length !== 0">
-                        <reco-icon icon="reco-tag" /> {{ $recoLocales.tag }}
-                    </h4>
-                    <TagList @getCurrentTag="getPagesByTags" />
-                    <h4
-                        v-if="
-                            $themeConfig.friendLink &&
-                            $themeConfig.friendLink.length !== 0
-                        "
-                    >
-                        <reco-icon icon="reco-friend" />
-                        {{ $recoLocales.friendLink }}
-                    </h4>
-                    <FriendLink />
-                </div>
-            </div>
-        </ModuleTransition>
+		<ModuleTransition delay="0.16">
+			<div v-show="recoShowModule" class="home-blog-wrapper">
+				<div class="blog-list">
+					<!-- 博客列表 -->
+					<note-abstract :data="$recoPosts" @paginationChange="paginationChange" />
+				</div>
+				<div class="info-wrapper">
+					<PersonalInfo />
+					<h4>
+						<reco-icon icon="reco-category" />
+						{{ $recoLocales.category }}
+					</h4>
+					<ul class="category-wrapper">
+						<li class="category-item" v-for="(item, index) in this.$categories.list" :key="index">
+							<router-link :to="item.path">
+								<span class="category-name">{{
+										item.name
+								}}</span>
+								<span class="post-num" :style="{ backgroundColor: getOneColor() }">{{ item.pages.length }}</span>
+							</router-link>
+						</li>
+					</ul>
+					<hr />
+					<h4 v-if="$tags.list.length !== 0">
+						<reco-icon icon="reco-tag" /> {{ $recoLocales.tag }}
+					</h4>
+					<TagList @getCurrentTag="getPagesByTags" />
+					<h4 v-if="
+						$themeConfig.friendLink &&
+						$themeConfig.friendLink.length !== 0
+					">
+						<reco-icon icon="reco-friend" />
+						{{ $recoLocales.friendLink }}
+					</h4>
+					<FriendLink />
+				</div>
+			</div>
+		</ModuleTransition>
 
-        <ModuleTransition delay="0.24">
-            <Content v-show="recoShowModule" class="home-center" custom />
-        </ModuleTransition>
-    </div>
+		<ModuleTransition delay="0.24">
+			<Content v-show="recoShowModule" class="home-center" custom />
+		</ModuleTransition>
+	</div>
 </template>
 
 <script>
 import {
-    defineComponent,
-    toRefs,
-    reactive,
-    computed,
-    onMounted,
+	defineComponent,
+	toRefs,
+	reactive,
+	computed,
+	onMounted,
 } from "vue-demi";
 import TagList from "@theme/components/TagList";
 import FriendLink from "@theme/components/FriendLink";
@@ -112,79 +91,79 @@ import { getOneColor } from "@theme/helpers/other";
 import { useInstance } from "@theme/helpers/composable";
 
 export default defineComponent({
-    data() {
-        return {
-            bgIndex: 1,
-        };
-    },
-    components: {
-        NoteAbstract,
-        TagList,
-        FriendLink,
-        ModuleTransition,
-        PersonalInfo,
-        RecoIcon,
-    },
-    setup(props, ctx) {
-        const instance = useInstance();
+	data() {
+		return {
+			bgIndex: 1,
+		};
+	},
+	components: {
+		NoteAbstract,
+		TagList,
+		FriendLink,
+		ModuleTransition,
+		PersonalInfo,
+		RecoIcon,
+	},
+	setup(props, ctx) {
+		const instance = useInstance();
 
-        const state = reactive({
-            recoShow: false,
-            heroHeight: 0,
-        });
+		const state = reactive({
+			recoShow: false,
+			heroHeight: 0,
+		});
 
-        const recoShowModule = computed(
-            () => instance && instance.$parent.recoShowModule
-        );
+		const recoShowModule = computed(
+			() => instance && instance.$parent.recoShowModule
+		);
 
-        const heroImageStyle = computed(
-            () => instance.$frontmatter.heroImageStyle || {}
-        );
+		const heroImageStyle = computed(
+			() => instance.$frontmatter.heroImageStyle || {}
+		);
 
-        const bgImageStyle = computed(() => {
-            // const url = instance.$frontmatter.bgImage
-            //     ? instance.$withBase(instance.$frontmatter.bgImage)
-            //     : require("../../images/bg.svg");
-            const url = require("../../images/bg/" +
-                Math.floor(Math.random() * 11 + 1) +
-                ".png");
+		const bgImageStyle = computed(() => {
+			// const url = instance.$frontmatter.bgImage
+			//     ? instance.$withBase(instance.$frontmatter.bgImage)
+			//     : require("../../images/bg.svg");
+			const url = require("../../images/bg/" +
+				Math.floor(Math.random() * 11 + 1) +
+				".png");
 
-            const initBgImageStyle = {
-                textAlign: "center",
-                overflow: "hidden",
-                background: `url(${url}) center/cover no-repeat`,
-            };
+			const initBgImageStyle = {
+				textAlign: "center",
+				overflow: "hidden",
+				background: `url(${url}) center/cover no-repeat`,
+			};
 
-            const { bgImageStyle } = instance.$frontmatter;
+			const { bgImageStyle } = instance.$frontmatter;
 
-            return bgImageStyle
-                ? { ...initBgImageStyle, ...bgImageStyle }
-                : initBgImageStyle;
-        });
+			return bgImageStyle
+				? { ...initBgImageStyle, ...bgImageStyle }
+				: initBgImageStyle;
+		});
 
-        onMounted(() => {
-            state.heroHeight = document.querySelector(".hero").clientHeight;
-            state.recoShow = true;
-        });
+		onMounted(() => {
+			state.heroHeight = document.querySelector(".hero").clientHeight;
+			state.recoShow = true;
+		});
 
-        return {
-            recoShowModule,
-            heroImageStyle,
-            bgImageStyle,
-            ...toRefs(state),
-            getOneColor,
-        };
-    },
-    methods: {
-        paginationChange(page) {
-            setTimeout(() => {
-                window.scrollTo(0, this.heroHeight);
-            }, 100);
-        },
-        getPagesByTags(tagInfo) {
-            this.$router.push({ path: tagInfo.path });
-        },
-    },
+		return {
+			recoShowModule,
+			heroImageStyle,
+			bgImageStyle,
+			...toRefs(state),
+			getOneColor,
+		};
+	},
+	methods: {
+		paginationChange(page) {
+			setTimeout(() => {
+				window.scrollTo(0, this.heroHeight);
+			}, 100);
+		},
+		getPagesByTags(tagInfo) {
+			this.$router.push({ path: tagInfo.path });
+		},
+	},
 });
 </script>
 
