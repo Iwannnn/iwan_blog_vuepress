@@ -5,6 +5,7 @@ categories:
  - 实验报告 
 tags:
  - 嵌入式
+ - uart
 cover: /images/covers/kumiko.jpg 
 ---
 
