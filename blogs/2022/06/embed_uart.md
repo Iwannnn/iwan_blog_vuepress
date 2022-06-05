@@ -220,9 +220,9 @@ __interrupt void Timer_A1_ISR(void) {
 
 1. 实现接收01并变灯，改变波特率为4800，停止位为2位，完成修改全双工为半双工。
 
-![green](images/0605/green.jpg)
-![red](images/0605/red.jpg)
-![uart_asist](images/0605/uart.png)
+![green](./images/0605/green.jpg)
+![red](./images/0605/red.jpg)
+![uart_asist](./images/0605/uart.png)
 
 2. 代码使用串口工具传输较长的字符串，大概是每9个字符就会丢失1个字符，似乎是处理不及时产生的问题
 

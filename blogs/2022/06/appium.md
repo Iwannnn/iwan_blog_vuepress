@@ -37,40 +37,40 @@ cover: /images/covers/haruko.jpg
 由于java，python，node， android和nox都是之前使用过的所以没有配置过程的截图，nox为安卓模拟器也需要配置到环境变量里，它的adb和android的adb版本肯能不一样，可能会导致连接失败的问题。
 
 替换adb，从abdroid sdk里把adb去出，复制两份其中一份命名为nox_adb.exe，替换nox原先文件。
-![env](images/0605/env.png)
+![env](./images/0605/env.png)
  
 安装appium
  
-![install_appium](images/0605/install.png)
+![install_appium](./images/0605/install.png)
 
 
 启动nox（夜神模拟器）
 
-![install_appium](images/0605/nox.png)
+![install_appium](./images/0605/nox.png)
 
 检查设备
 
-![device](images/0605/device.png)
+![device](./images/0605/device.png)
  
 在模拟器里打开计算器，查看包名的等信息
 
-![findstr](images/0605/find.png)
+![findstr](./images/0605/find.png)
 
 打开appium
 
-![start_appium](images/0605/start_appium.png)
+![start_appium](./images/0605/start_appium.png)
 
 启动服务，点击左上角的搜索图片，经行session配置
 
-![appium](images/0605/appium.png)
+![appium](./images/0605/appium.png)
  
 进行设备信息的配置
 
-![settings](images/0605/settings.png)
+![settings](./images/0605/settings.png)
 
 获取模拟器系统版本
 
-![version](images/0605/version.png)
+![version](./images/0605/version.png)
  
 配置文件
 
@@ -90,18 +90,18 @@ cover: /images/covers/haruko.jpg
 > An unknown server-side error occurred while processing the command. Original error: pkg, and activity or intent action, are required to start an application
 
 
-![error](images/0605/cant_connect.png)
+![error](./images/0605/cant_connect.png)
  
 开始录制程序，鼠标先选择标签，再根据标签类型会有能进行的操作经行操作。
 测试用例8*9
 清理缓存
-![clear](images/0605/clear.png)
+![clear](./images/0605/clear.png)
 
 输入数据
-![tap8](images/0605/tap8.png)
+![tap8](./images/0605/tap8.png)
  
 此使模拟器的数据也会一同变化，而且还比这里反应快些，录制完成
-![8*9](images/0605/89.png)
+![8*9](./images/0605/89.png)
  
  
 录制完成选择导出的代码类型，
