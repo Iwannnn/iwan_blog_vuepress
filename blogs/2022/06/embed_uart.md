@@ -6,7 +6,7 @@ categories:
 tags:
  - 嵌入式
  - uart
-cover: /images/covers/kumiko.jpg 
+cover: /images/covers/kumiko.png
 ---
 
 久美子的性格真是糟糕呢
