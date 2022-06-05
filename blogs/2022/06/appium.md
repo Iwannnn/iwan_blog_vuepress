@@ -5,7 +5,7 @@ categories:
  - 实验报告 
 tags:
  - 软件测试
-cover: /images/.png
+cover: /images/haruko.jpg
 
 ---
 <!-- more -->
