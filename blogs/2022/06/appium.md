@@ -150,11 +150,11 @@ driver.quit()
 
 执行测试，会自动启动计算器，执行脚本并且关闭计算器
  
-![before](images/0605/before.png)
-![start](images/0605/start.png)
+![before](./images/0605/before.png)
+![start](./images/0605/start.png)
 
 执行完成
-![end](images/0605/end.png)
+![end](./images/0605/end.png)
  
 
 
