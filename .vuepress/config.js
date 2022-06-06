@@ -102,7 +102,8 @@ module.exports = {
 				"",
 				"202205.md",
 				"202206.md",
-			]
+			],
+			"/blogs/": []
 		},
 		type: "blog",
 		blogConfig: {

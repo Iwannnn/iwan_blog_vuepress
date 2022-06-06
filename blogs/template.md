@@ -18,7 +18,7 @@ cover: /images/logo.png
 
 这里是文章的正文。
 
-![asuka](./images/asuka.png)
+![asuka](./images/0513/asuka.png)
 
 
 
