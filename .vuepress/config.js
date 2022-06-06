@@ -101,6 +101,7 @@ module.exports = {
 			"/docs/postgraduate/": [
 				"",
 				"202205.md",
+				"202206.md",
 			]
 		},
 		type: "blog",
