@@ -1,11 +1,12 @@
 ---
-title: 如何编写和阅读嵌入式程序代码和随便记一记知识
-date: 2022-06-06
+title: 突如其来的CodeSpace
+date: 2022-05-23
 categories:
- - 记一记
+ - CodeSpace 
 tags:
- - 嵌入式
-cover: /images/covers/white.jpg
+ - VSCode
+ - Github
+cover: /images/covers/glass.jpg
 ---
 
 <!-- more -->
