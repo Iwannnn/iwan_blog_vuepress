@@ -10,7 +10,6 @@ cover: /images/covers/white.jpg
 
 <!-- more -->
 
-# 嵌入式系统学习记录
 
 ## 知识记录
 
