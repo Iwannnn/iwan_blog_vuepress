@@ -6,6 +6,7 @@ categories:
 cover: /images/covers/baka.jpg
 ---
 
+<!-- more -->
 
 ## 组帧
 将比特组合成帧，添加首部尾部，分组。
