@@ -55,7 +55,7 @@ module.exports = {
 			},
 
 			{
-				"text": "假装有记录的文档",
+				"text": "没记什么的文档",
 				"icon": "reco-message",
 				"items": [
 					{
@@ -69,7 +69,7 @@ module.exports = {
 				]
 			},
 			{
-				"text": "无限变换的时间线",
+				"text": "孤独的观测者",
 				"link": "/timeline/",
 				"icon": "reco-date"
 			},
