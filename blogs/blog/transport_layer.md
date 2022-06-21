@@ -6,6 +6,11 @@ categores:
 cover: /images/covers/reborn.jpg
 ---
 
+家教似乎要出新动画的！
+
+十几年了，希望是真的:sob::sob::sob::sob::sob:
+
+<!-- more -->
 ## 传输层的功能
 
 提供端到端的传输，利用套接字，实现复用分用
