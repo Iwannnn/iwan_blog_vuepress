@@ -5,29 +5,32 @@ publish: false
 
 ---
 
-## 随便写
+## 随便写写
 
 **40多岁，离异，有个女儿。**
 
 :::danger
 超爱美少女！！！！
+嫉妒心很强！！！
 :::
 
 喜欢穿背心，喜欢穿拖鞋，喜欢玩游戏，喜欢写代码。
 
-## QQ
+
+
+### QQ
 
 ![qqQRCode](/images/qq.jpg)
 
-## WX
+### WX
 
 ![wxQRCode](/images/wx.jpg)
 
-## TELEGRAM
+### TELEGRAM
 
 ![telegramQRCode](/images/telegram.jpg)
 
-## 20220617
+### 20220617
 
 :::tip
 到了中年就会这样子吗
@@ -42,6 +45,10 @@ publish: false
 八高应该已经把我忘记了吧。:relieved::relieved::relieved:
 
 ::: details
-还被好多同学删了。:pleading_face::pleading_face:
+还被好多同学删了。
 :::
+
+### 好恶心
+
+找到机会就阴阳怪气共产党的人还要入党。
 
