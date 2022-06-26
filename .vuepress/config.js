@@ -49,13 +49,13 @@ module.exports = {
 		//导航栏
 		nav: [
 			{
-				"text": "可能是真实的首页",
+				"text": "无法发光的织女星",
 				"link": "/",
 				"icon": "reco-home"
 			},
 
 			{
-				"text": "没记什么的文档",
+				"text": "无限远点的牵牛星",
 				"icon": "reco-message",
 				"items": [
 					{
@@ -69,7 +69,7 @@ module.exports = {
 				]
 			},
 			{
-				"text": "孤独的观测者",
+				"text": "与天同行的观测者",
 				"link": "/timeline/",
 				"icon": "reco-date"
 			},
