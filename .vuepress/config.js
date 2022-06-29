@@ -95,8 +95,9 @@ module.exports = {
 		sidebar: {
 			"/docs/anime/": [
 				"",
-				"202204.md",
 				"old_anime.md",
+				"202204.md",
+				"202206.md",
 			],
 			"/docs/postgraduate/": [
 				"",
