@@ -15,3 +15,18 @@ categories:
 
 <!-- more -->
 
+### 我妻由乃
+
+### 惣流·明日香·兰格雷 Sōryū Asuka Rangurē
+
+### 楪祈
+
+### μ's
+
+### miku
+
+### 克里斯蒂娜
+
+### 冬马雪菜
+
+### Faye Valentine
