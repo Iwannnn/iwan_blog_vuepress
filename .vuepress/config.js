@@ -97,12 +97,13 @@ module.exports = {
 				"",
 				"old_anime.md",
 				"202204.md",
-				"202206.md",
+				"202207.md",
 			],
 			"/docs/postgraduate/": [
 				"",
 				"202205.md",
 				"202206.md",
+				"202207.md",
 			],
 			"/blogs/": []
 		},
