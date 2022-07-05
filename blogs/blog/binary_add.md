@@ -1,5 +1,5 @@
 ---
-title: 数据的表示运算
+title: 数据的表示和运算
 date: 2022-07-05
 categories:
  - 计算机组成原理
