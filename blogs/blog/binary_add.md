@@ -4,7 +4,7 @@ date: 2022-07-05
 categories:
  - 计算机组成原理
 tags:
- - 408
+ - 可恶的408
 cover: /images/covers/bw.jpg
 ---
 

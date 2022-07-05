@@ -5,7 +5,7 @@ categories:
  - 数据结构与算法
 tags:
  - 有点复杂的算法
- - 408
+ - 可恶的408
 cover: /images/covers/pants.jpg
 ---
 
