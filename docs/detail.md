@@ -47,7 +47,7 @@ publish: false
 八高应该已经把我忘记了吧。:relieved::relieved::relieved:
 
 ::: details
-还被好多同学删了。
+还被好多同学删了。明明都是你们加得我，还一声不响得删掉...
 :::
 
 
