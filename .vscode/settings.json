@@ -1,6 +1,6 @@
 {
-	"files.exclude": {
-		"blogs/other": true
-	},
-	"workspace.isHidden": false
+  "files.exclude": {
+    "blogs/other": false
+  },
+  "workspace.isHidden": false
 }
