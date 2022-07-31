@@ -4,7 +4,7 @@ date: 2022-07-29
 categores:
  - 高等数学
  - 考研
-cover: /images/covers/asuka.bmp
+cover: /images/covers/ayanami.bmp
 ---
 
 逃避现实竟然也要努力跑，可恶
