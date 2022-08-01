@@ -147,6 +147,7 @@ module.exports = {
 		}
 	},
 	plugins: [
+		// 浏览器cpu消耗太太太大了，一个miku就占50%了
 		// [
 		// 	"@vuepress-reco/vuepress-plugin-kan-ban-niang",
 		// 	{
