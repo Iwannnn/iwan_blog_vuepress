@@ -75,13 +75,13 @@ void binary_insert_Sort(int arr[], int len) {
       else
         low = mid + 1;
     }
-    // 退出时 low = high
+
     // 1.arr[mid]=arr[0] 退出后 low == mid + 1;high == mid;将low或者high+1到j-1向后移动一格，保持稳定性
     // 2.arr[mid]>arr[0] 退出后 low == mid;high == mid - 1;将low或者high+1到j-1向后移动一格
     // 3.arr[mid]<arr[0] 退出后 low == mid + 1;high == mid;将low或者high+1到j-1向后移动一格
 
     for (j = i - 1; j >= high + 1; --i) {
-      arr[j - 1] = arr[j];
+      arr[j + 1] = arr[j];
     }
     arr[high + 1] = arr[0];
   }
@@ -91,7 +91,7 @@ void binary_insert_Sort(int arr[], int len) {
 
 **空间复杂度**，和直接插入排序一样
 
-**时间复杂度**，比较次数减少了，约为$O(nlog_2n)$，移动次数没变
+**时间复杂度**，比较次数减少了，约为$O(nlog_2n)$，移动次数没变，所以还是$O(n^2)$
 
 稳定的o
 
@@ -132,17 +132,19 @@ void shell_sort(int arr[], int len) {
 
 **空间复杂度**，常数个辅助空间,$O(1)$
 
-**时间复杂度**，约为$O(n^2)$
+**时间复杂度**，某个特定范围下为$O(n^{1.3})$，约为$O(n^2)$
 
 不稳定的
 
 ## 交换排序
 
+冒泡排序和交换排序其实都是在一次排序过程中确定了一个位置的数据，冒泡排序是第一个最大或最小，快速排序是选择一个数，把他放在它该在的位置，左边都比他小，右边都比他大；
+
 ### 冒泡排序
 
 好像高中技术就在学这个了，现在看看真的挺简单的，大概是最简单的实现排序的算法之一了吧，当时似乎还有点迷惑。
 
-1. 比较相邻的元素。如果第一个比第二个大，就交换它们两个。
+1. 比较相邻的元素。如果逆序，就交换它们两个。
 2. 对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。
 3. 针对所有的元素重复以上的步骤，除了最后一个。
 4. 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
@@ -218,7 +220,7 @@ void quick_sort(int arr[], int low, int high) {
 
 *所有内部排序算法平均性能最优*
 
-TODO:
+
 ## 选择排序
 
 ### 简单的选择排序
@@ -251,7 +253,7 @@ void selection_sort(int arr[], int len) {
 **空间复杂度**，$O(1)$
 **时间复杂度**，最情况加不需要进行交换，移动$0$次,最坏情况下移动$3(len-1)$次，比较次数和初始序列无关为$\frac{n(n-1)}{2}$,所以时间复杂度为$O(n^2)$
 
-算法是不稳定的，相等的值先找的会先被标记，还是得看判断符号
+算法是不稳定的，相等的值先找的会先被标记，可能会被替换到后面；
 
 ### 堆排序
 
@@ -267,7 +269,7 @@ void selection_sort(int arr[], int len) {
 | ------ | --------------------- | ------------------------- |
 | 父     | $\lfloor i/2 \rfloor$ | $\lfloor (i-1)/2 \rfloor$ |
 | 左孩子 | $2i+1$                | $2i$                      |
-| 右孩子 | $2i+2$                | $2i+1$$$                  |
+| 右孩子 | $2i+2$                | $2i+1$                    |
 
 
 堆排序的关键是构造初始堆，从第$\lfloor n/2 \rfloor$（下标从1开始）节点开始到第$1$个节点向前构建大顶堆。
@@ -345,31 +347,30 @@ void heap_sort(int arr[], int len) {
 
 ```c
 //治
-void conquer(int arr[], int left, int mid, int right, int temp[]) {
-  int i = left, j = mid + 1;
-  int index = 0;
+int *temp=(int *)malloc(sizeof(int)*(n+1))
+void conquer(int &arr[], int left, int mid, int right) {
+	for(int i = left;i <= right;++i)
+		temp[i] = arr[i];
+  int i = left, j = mid + 1, index = left;
   while (i <= mid && j <= right) {
-    temp[index++] = arr[i] < arr[j] ? arr[i++] : arr[j++];
+    arr[index++] = temp[i] < temp[j] ? temp[i++] : temp[j++];
   }
-  index = 0;
-  while (left <= right) {
-    arr[left++] = temp[index++];
-  }
+	while (i <= mid) arr[index++] = temp[i++];
+	while (j <= right) arr[index++] = temp[j++];
 }
 
 //分
-void divide(int arr[], int left, int right, int temp[]) {
+void divide(int &arr[], int left, int right) {
   if (left < right) {
     int mid = left + (right - left) / 2;
-    divide(arr, left, mid, temp);
-    divide(arr, mid + 1, right, temp);
-    conquer(arr, left, mid, right, temp);
+    divide(arr, left, mid);
+    divide(arr, mid + 1, right);
+    conquer(arr, left, mid, right);
   }
 }
 
-void merge_sort(int arr[], int len) {
-  int *temp = (int *)malloc(sizeof(int *) * len);
-  divide(arr, 1, len, temp);
+void merge_sort(int &arr[], int len) {
+  divide(arr, 1, len);
 }
 
 int min(int a, int b) {
