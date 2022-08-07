@@ -946,14 +946,17 @@ Activity on Edge
 快速解题技巧，起点到终点的最长路径
 
 ## 查找
+查找某一个关键词的概率为$P_i$一般$P_i=\frac{1}{n}$，找到该关键字所需要的比较次数为$C_i$
+$$
+ASL=\sum_{i=1}^{n}P_iC_i
+$$
 
-### 分析
+[简单的查找算法](/blogs/blog/easy_search.md)和[复杂的查找算法](/blogs/blog/complex_search.md)
 
-#### ASL
+注意ASL和时空复杂度的分析
 
-#### 时间、空间复杂度
 
-#### 全新代码分析
+
 
 ### 应用
 
@@ -964,6 +967,8 @@ Activity on Edge
 使用某中查找算法找
 
 ## 排序
+
+[排序算法](/blogs/blog/sort.md)
 
 ### 分析
 
