@@ -213,6 +213,27 @@ void quick_sort(int arr[], int low, int high) {
 }
 ```
 
+考试默写优化后的快排，用作接口；优化后最坏时间复杂度也为$O(nlogn)$
+
+```c
+void q_sort(int a[], int l, int r) {
+  if (l > r) return;      //如果数字元素小于1则退出
+  int i = l, j = r, key; // i，j作为数组左右两边移动下标
+                          //随机选择一个元素和a[l]交换，快排优化
+  key = a[l];
+  while (i < j) {
+    while (i < j && a[j] > key)
+      --j;
+    while (i < j && a[i] < key)
+      --i;
+    if (i < j) swap(a[i], a[j]);
+  }
+  a[i] = key;
+  q_sort(a, l, i - 1);
+  q_sort(a, i + 1, r);
+}
+```
+
 #### **复杂度分析**
 
 **空间复杂度**，由于需要递归栈，最坏情况下要O(n),平均深度为$O(log_2n)$
