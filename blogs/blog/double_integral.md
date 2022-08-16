@@ -4,7 +4,7 @@ date: 2022-08-09
 categories:
  - 高等数学
  - 考研
-cover: /images/covers/stocking.jpg
+cover: /images/covers/ye.jpg
 ---
 
 ## 二重积分
