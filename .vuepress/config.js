@@ -186,7 +186,7 @@ module.exports = {
 		['meting', {
 			metingApi: "https://api.injahow.cn/meting/",
 			meting: {
-				auto: "https://music.163.com/#/playlist?id=369312229"
+				auto: "https://music.163.com/#/playlist?id=7736704550"
 			},
 			// 不配置该项的话不会出现全局播放器
 			aplayer: {
