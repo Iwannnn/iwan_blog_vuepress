@@ -22,22 +22,35 @@ cover: /images/covers/blue.jpg
 #### anaconda
 
 - 使用anaconda创建一个新的虚拟环境
-```conda create -n yolact python=3.7```
+  
+```cmd
+conda create -n yolact python=3.7
+```
 
 - 激活新的虚拟环境
-```conda activate yolact```
+  
+```cmd
+conda activate yolact
+```
 
 - 安装一些必要的包
 
-```
+```cmd
 pip install cython
 pip install opencv-python pillow pycocotools matplotlib 
 ```
 
-- pycocotools安装有可能会出现问题```pip3 install pycocotools-windows```
+- pycocotools安装有可能会出现问题
+  
+```cmd
+pip install pycocotools-windows
+```
 
 - 安装pytorch，使用conda指令安装很麻烦，网络总是有问题，所以用pip安装,[官网](https://pytorch.org/get-started/locally/) 
-```pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117```
+
+```cmd
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
+```
 
 检查安装是否正确
 
@@ -91,7 +104,11 @@ python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_thresho
 
 **安装labelme**
 
-- 在虚拟环境中下载labelme，```pip install labelme```
+- 在虚拟环境中下载labelme，
+```cmd
+pip install labelme
+```
+
 - 打开labelme程序，```labelme```
 - 选择文件夹（复制了一份文件，并把深度图、强度图和点云删了），右键图片，选择 Create Polygans，对文件经行标注，把货物框起来，填入标签goods，选择next images并且保存annotations
 - 将labelme格式文件进行转换，在存放照片的文件夹外新建文件label.txt，内容如下
@@ -103,6 +120,12 @@ goods
 ```
 
 - 将文件转换为coco格式，进入```labelme/examples/instance_segmentation```文件夹，执行指令```python labelme2coco.py <data> <data_output> --labels <label.txt path>```其中```<data>```为输入的文件路径，```<data_outpuy>```为输出的路径，```<label.txt>```为上一步新建的label.txt文件的路径
+
+```cmd
+python labelme2coco.py E:\undergraduate\last\segment\data E:\undergraduate\last\segment\data\data_coco_out --labels E:\undergraduate\last\segment\label.txt
+```
+
+把获得的照片和annotations复制到yolact的data文件目录下
 
 
 #### 训练
@@ -128,7 +151,7 @@ python train.py --help
 
 ```python
 #设定自己的数据集位置j
-iwan_dataset = dataset_base.copy({
+iwan_dataset_config = dataset_base.copy({
     'name': 'Goods_Dataset',
     'train_images': './data/goods',
     'train_info': './data/goods/annotations.json',
@@ -139,23 +162,22 @@ iwan_dataset = dataset_base.copy({
     'label_map': {1: 1}
 })
 
-#设定训练的参数
-yolact_iwan_config = coco_base_config.copy({
-    'name': 'iwan_dataset',
+yolact_base_config = coco_base_config.copy({
+    'name': 'yolact_base',
 
     # Dataset stuff
-    'dataset': iwan_dataset,
+    'dataset': iwan_dataset, # 数据集定义
     'num_classes': len(iwan_dataset.class_names) + 1,
 
     # Image Size
     'max_size': 550,
 
     # Training params
-    'lr_steps': (2800, 6000, 7000, 7500),
-    'max_iter': 8000,
+    'lr_steps': (280, 600, 700, 750),# 学习率衰减区间
+    'max_iter': 400,# 最大迭代次数
 
     # Backbone Settings
-    'backbone': resnet50_backbone.copy({
+    'backbone': resnet101_backbone.copy({
         'selected_layers': list(range(1, 4)),
         'use_pixel_scales': True,
         'preapply_sqrt': False,
@@ -189,9 +211,26 @@ yolact_iwan_config = coco_base_config.copy({
 
     'use_semantic_segmentation_loss': True,
 })
+
 ```
 
-- 进行训练 ```python train.py --config=yolact_iwan_config --batch_size=2```
+原本我自己设置了了一个```config```，但是程序似乎有什么字符换解析的过程，我的不是很合适就直接在给的上面改了
+
+程序中没有提供轮次的修改，可根据最大迭代次数进行计算。比如我的数据集只有2000张左右，批次给的是4，我设置了25000，大概迭代轮次为50轮，可以根据自己数据集数量依次类推设置，lr_steps是学习率衰减区间，也可以根据自己设置的最大迭代次数进行设置。至此，配置也修改完成了。
+
+
+- 进行训练 
+
+```cmd
+python train.py --config=yolact_iwan_config --batch_size=2/4
+```
+
+- 训练完后测试
+
+```cmd
+python eval.py --trained_model=weights/xxx.pth --score_threshold=0.3 --top_k=100 --image=xxx
+python eval.py --trained_model=weights/yolact_base_61_1600.pth --score_threshold=0.3 --top_k=100 --images=data/goods_input:data/goods_output
+```
 
 #### 错误信息处理
 
@@ -211,5 +250,5 @@ match.```
 
 - 出现```RuntimeError:CUDA error:out of memory```
 
-```yolact```中的```train.py```默认```batch_size=8```，对于我卑微的1660ti实在是负担不起，在命令中加入参数```--batch_size=2```
+```yolact```中的```train.py```默认```batch_size=8```，对于我卑微的1660ti实在是负担不起，在命令中加入参数```--batch_size=2/4```
 
