@@ -124,7 +124,7 @@ goods
 - 将文件转换为coco格式，进入```labelme/examples/instance_segmentation```文件夹，执行指令```python labelme2coco.py <data> <data_output> --labels <label.txt path>```其中```<data>```为输入的文件路径，```<data_outpuy>```为输出的路径，```<label.txt>```为上一步新建的label.txt文件的路径
 
 ```cmd
-python labelme2coco.py E:\undergraduate\last\segment\data E:\undergraduate\last\segment\data\data_coco_out --labels E:\undergraduate\last\segment\label.txt
+python labelme2coco.py E:\undergraduate\last\segment\data E:\undergraduate\last\segment\data_coco_out --labels E:\undergraduate\last\segment\label.txt
 ```
 
 把获得的照片和annotations复制到yolact的data文件目录下
@@ -224,14 +224,14 @@ yolact_base_config = coco_base_config.copy({
 - 进行训练 
 
 ```cmd
-python train.py --config=yolact_iwan_config --batch_size=2/4
+python train.py --config=yolact_base_config --batch_size=2/4
 ```
 
 - 训练完后测试
 
 ```cmd
 python eval.py --trained_model=weights/xxx.pth --score_threshold=0.3 --top_k=100 --image=xxx
-python eval.py --trained_model=weights/yolact_base_61_1600.pth --score_threshold=0.3 --top_k=100 --images=data/goods_input:data/goods_output
+python eval.py --trained_model=weights/yolact_base_91_3200.pth --score_threshold=0.7 --top_k=100 --images=data/goods_input:data/goods_output
 ```
 
 #### 错误信息处理
