@@ -65,7 +65,11 @@ module.exports = {
 					{
 						"text": "考研！",
 						"link": "/docs/postgraduate/"
-					}
+					},
+					{
+						"text": "论文",
+						"link": "/docs/paper/"	
+					},
 				]
 			},
 			{
@@ -110,6 +114,11 @@ module.exports = {
 				"202211.md",
 				"202212.md",
 				"202302.md",
+			],
+			"/docs/paper/":[
+				"",
+				"AI4Sci.md",
+				"FPV.md"
 			],
 			"/blogs/": []
 		},
