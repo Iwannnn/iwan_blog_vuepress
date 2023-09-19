@@ -3,7 +3,7 @@ title:  AI 4 Science
 date: 2023-09-08
 cover: /images/covers/anno.jpg
 categories:
- - 论文
+ - 文献
 tags:
  - AI
 # sticky: true

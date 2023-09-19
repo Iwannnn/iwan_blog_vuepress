@@ -3,13 +3,11 @@ title:  AI FPV 战胜人类
 date: 2023-09-10
 cover: /images/covers/soyo.jpg
 categories:
- - 论文
+ - 文献
 tags:
  - AI
  - 无人机
 
-
-# sticky: true
 ---
 
 <!-- more -->

@@ -118,7 +118,8 @@ module.exports = {
 			"/docs/paper/":[
 				"",
 				"AI4Sci.md",
-				"FPV.md"
+				"FPV.md",
+				"locomotion_skill.md"
 			],
 			"/blogs/": []
 		},
