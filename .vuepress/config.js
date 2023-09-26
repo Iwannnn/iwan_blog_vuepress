@@ -119,7 +119,9 @@ module.exports = {
 				"",
 				"AI4Sci.md",
 				"FPV.md",
-				"locomotion_skill.md"
+				"locomotion_skill.md",
+				"embodied_neur.md",
+				"PSDLO.md"
 			],
 			"/blogs/": []
 		},
