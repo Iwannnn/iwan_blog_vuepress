@@ -1,7 +1,7 @@
 ---
 title: 神经形态具身智能
 date: 2023-09-18
-cover: /images/covers/
+cover: /images/covers/gua.jpg
 categories:
  - 文献
 tags:
