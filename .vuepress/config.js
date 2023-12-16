@@ -68,7 +68,7 @@ module.exports = {
 					},
 					{
 						"text": "论文",
-						"link": "/docs/paper/"	
+						"link": "/docs/paper/"
 					},
 				]
 			},
@@ -115,12 +115,9 @@ module.exports = {
 				"202212.md",
 				"202302.md",
 			],
-			"/docs/paper/":[
+			"/docs/paper/": [
 				"",
 				"AI4Sci.md",
-				"FPV.md",
-				"locomotion_skill.md",
-				"embodied_neur.md",
 				"PSDLO.md"
 			],
 			"/blogs/": []
