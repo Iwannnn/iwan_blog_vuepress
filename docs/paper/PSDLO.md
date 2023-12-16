@@ -47,3 +47,26 @@ physics-supervise | deep learning | evolutionary algorithm | accuracy | efficien
 PSDLO中，物理学不仅为神经网络模型提供数据，还对每个迭代进行监督。
 
 量化比较PSDLO和结合进化方法的无物理监督的NN，PSDLO能够适当辨别与处理错误的数据与特征
+
+## result
+
+### 问题陈述
+
+FigA:EM，EM+DL，PSDLO在准确度和速度上的比较，提供三个样例，固体力学（最佳弹簧结构设计的双稳态结构）、声学（声屏障性能优化）、固态物理学（应变工程实现压电耦合系数最大化）
+
+深度学习方法采取NN，全连接神经网络，输入层通过提取其特征（例如几何和物理参数）与物理模型进行通信然后，隐藏层捕捉输入特征之间的复杂关系和相互作用，而输出层，同时也是进化算法的适应度函数，反映了这个物理问题的结果。
+
+进化算法采取遗传算法GA举例，GA是一种基于自然选择和遗传原理的优化方法
+
+### Deep Learning–Based Evolutionary Method without Physics Supervision
+
+todo
+
+## 概括
+
+优化算法，需要计算fitness function，追去accuracy和efficiency
+
+将深度学习与优化算法结合，计算fitness function，提升速度，但是牺牲了准确性
+
+作者提出子啊优化算法每次迭代中，假如物理监督，
+

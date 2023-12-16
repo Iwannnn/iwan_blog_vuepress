@@ -2,6 +2,8 @@
 title: 回忆录还是遗书
 date: 2000-12-06
 cover: /images/covers/si.jpg
+keys:
+ - 'c26b6c3cf411b903016dd528aa482876'
 ---
 
 ## 小事年表
