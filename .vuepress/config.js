@@ -118,7 +118,8 @@ module.exports = {
 			"/docs/paper/": [
 				"",
 				"AI4Sci.md",
-				"PSDLO.md"
+				"PSDLO.md",
+				"evolutionary.md"
 			],
 			"/blogs/": []
 		},
