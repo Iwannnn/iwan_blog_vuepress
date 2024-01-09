@@ -1,6 +1,6 @@
 ---
 title: SeedLab ex2 Packet Sniffing and Spoofing Lab
-date: 2024-01-09
+date: 2023-12-06
 categories:
  - 网络安全
 cover: /images/covers/mm.png

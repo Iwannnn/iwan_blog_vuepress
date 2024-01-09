@@ -1,5 +1,6 @@
 ---
 title: SeedLab ex4 Buffer Overflow Attack Lab (Set-UID Version)
+date: 2024-01-09
 categories:
  - 网络安全
 cover: /images/covers/traffic.png

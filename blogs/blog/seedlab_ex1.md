@@ -1,6 +1,6 @@
 ---
 title: SeedLab ex1 Secret-Key Encryption Lab
-date: 2024-01-09
+date: 2023-11-24
 categories:
  - 网络安全
 cover: /images/covers/red.png
