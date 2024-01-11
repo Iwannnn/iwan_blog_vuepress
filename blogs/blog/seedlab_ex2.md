@@ -5,15 +5,22 @@ categories:
  - 网络安全
 cover: /images/covers/mm.png
 ---
+麦!
+<!--  -->
+## Task 0 env
+docker 搞一搞
 
 ## Task 1 Using Scapy to Sniff and Spoof Packets
 
 ### Task 1.1 Sniffing Packets
 
 - task 1.1A Capture only the ICMP packet
-
+- 
+在attacker容器下执行程序，监听包会经过的网卡，捕获icmp包并答应出包信息。
+在host A容器下ping host B，
 ```ping 10.9.0.6```
 
+观察attacker容器的程序输出和host A的反馈
 ```python
 #!/usr/bin/env python3
 
@@ -26,6 +33,8 @@ pkt = sniff(iface='br-9539db83f0ea',filter = 'icmp', prn = print_pkt) # iface �
 ```
 
 - task 1.1B Capture any TCP packet that comes from a particular IP and with a destination port number 23.
+
+修改filter中的内容为tcp and ip src host 10.9.0.5 and dst port 23，从而过滤出不同的包。
 
 ```telnet 10.9.0.6```
 
@@ -41,6 +50,8 @@ pkt_tcp_23 = sniff(iface='br-9539db83f0ea',filter = 'tcp and ip src host 10.9.0.
 ```
 
 - task 1.1C Capture packets comes from or to go to a particular subnet. You can pick any subnet, such as 128.230.0.0/16; 
+
+修改filter中的内容为net 128.230.0.0/16 and ip，从而过滤出不同的包。
 
 ```ping 128.230.0.2```
 
@@ -58,7 +69,10 @@ pkt_ip = sniff(iface='br-9539db83f0ea',filter = 'net 128.230.0.0/16 and ip', prn
 
 ### Task 1.2 Spoofing ICMP Packets
 
-attacker 执行代码 hostA tcpdump
+在一直源地址和目的地址的情况下伪造一个ICMP包并发送。伪造是的128.230.0.2ip返回给host A的包。
+
+attacker 执行代码
+hostA tcpdump
 
 ```python
 #!/usr/bin/env python3
@@ -76,6 +90,8 @@ send(fake / icmp)
 
 
 ### Task 1.3 Traceroute
+
+这个任务的目标是，得到本机访问一个ip地址需要的跳数。程序思路为：用一个循环其中变量为ttl，范围为1-最大的跳数。循环体中使用ttl限制ICMP发包，如过收到了回应则打印出来，如果返回结果为目标ip则退出循环，得到需要的跳数。
 
 ```python
 #!/usr/bin/env python3
@@ -102,6 +118,8 @@ traceroute('ip')
 
 
 ### Task 1.4 Sniffing and-then Spoofing
+
+嗅探并伪造数据包就是将前两个实验结合，显示捕捉到ICMP，再获取ICMP包中的信息，根据信息伪造包并且发送。限制条件为icmp包且来自于hostA。在attacker容器下执行这个程序。
 
 ```python
 #!/usr/bin/env python3
@@ -135,6 +153,8 @@ pkt_ip = sniff(iface='br-9539db83f0ea',filter = 'icmp and ip src 10.9.0.5', prn 
 ### Task 2.1 Writing Packet Sniffing Program
 
 - 2.1A Understanding How a Sniffer Works
+- 
+
 
 **Q1**
 1. pcap_open_live 打开网络接口
@@ -153,6 +173,8 @@ pkt_ip = sniff(iface='br-9539db83f0ea',filter = 'icmp and ip src 10.9.0.5', prn 
 ```gcc -o out_name code_name.c -lpcap```
 
 - 2.1B: Writing Filters
+
+编写ICMP包嗅探程序，程序思路：从网络中获取数据包，逐步拆包获得需要的数据，定义ethheader，ipheader，从ipheader中可以识别出包的类型从而判断包。
 
 ```c
 #include <arpa/inet.h>
@@ -243,6 +265,8 @@ int main() {
 ```
 
 - 2.1C: Sniffing Passwords
+
+在telnet远程控制中，获取传输的密码，假设他是明文传输的。修改程序，添加tcpheader，获取tcp包信息，得到其中的数据部分输出。Filter没特别修改之前的也适用
 
 ```C
 #include <arpa/inet.h>
@@ -349,6 +373,8 @@ int main() {
 ```
 
 ### 2.2 Spoofing
+
+先定义一个buffer，通过ipheader和icmpheader结构体对修改，填写ip头和icmp头的信息。在编写icmp包时添加校验操作。最后发送
 
 ```c
 #include <arpa/inet.h>

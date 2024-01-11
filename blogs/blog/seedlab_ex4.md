@@ -5,7 +5,8 @@ categories:
  - 网络安全
 cover: /images/covers/traffic.png
 ---
-
+美丽
+<!--  -->
 ## env setup
 
 1. 关闭地址空间随机化
@@ -145,7 +146,7 @@ void dummy_function(char *str) {
 具体找的方法：
 1. 先看ebp基址指针，指针的内容是这个函数基址地址，基址地址里存放的是上一个函数的基址地址，基质地址的上一个字是存放函数返回地址的地址，这个地址就与buffer[0]的距离是offset，**```offset = ebp+4-buffer[0]```**
 ~~2~~. 原本的思路是设定一个大于offset的start值，buffer[0]+start的结果地址就是ret的地址，这样参数设定下来跑是能跑通，而且调试里面看过来地址也是对刚好对应上的，但是！在start-offset 到start的区间里也能成功跑通，搞这个搞了3个小时没想明白，战略性放弃一下（**奇怪的问题解决了，大概是调试和运行用的地址不是同样的地址，所以运行时打印地址看看**）
-3. ret的最小值为offset+start，这个是刚刚好的位置。start的值和缓冲区大小有一定关系，首先不能和ret存储的位置产生覆盖，然后将shellcode放在ret前面或者后面得看缓冲区
+3. ret的边缘的值为offset+start，这个是刚刚好的位置。start的值和缓冲区大小有一定关系，首先不能和ret存储的位置产生覆盖，然后将shellcode放在ret前面或者后面得看缓冲区
 
 
 因为添加了打印地址的一行，所以把stack.c也放上来了

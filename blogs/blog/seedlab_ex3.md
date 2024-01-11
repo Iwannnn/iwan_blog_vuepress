@@ -5,7 +5,8 @@ categories:
  - 网络安全
 cover: /images/covers/grid.png
 ---
-
+雨宫哲你是伟大的
+<!--  -->
 ## Task1: SYNFlooding Attack
 
 ###  Task 1.1: Launching the Attack Using Python
@@ -29,8 +30,11 @@ while True:
 
 先运行1分钟，在telnet victim，大概会出错，再排查问题
 
+使用python代码进行实验，执行这段代码至少超过一分钟，发现并不能有效的实现泛洪攻击，telnet仍然能够成功连接。有可能是因为Python程序可能不够快，在竞争TCP半开放连接队列，可能输给合法的telnet数据包。还可能由于TCP的缓存机制，如果禁用了SYN Cookies，TCP将为“已验证目标”在排队队列中保留四分之一的空间，如果先记住了用户的ip，会不受泛洪影响。
+
 1. TCP cache 清空
 2. 多开synflood.py
+
 
 
 ### Task 1.2: Launch the Attack Using C
@@ -91,6 +95,8 @@ sniff(iface=iface, prn=rst_attack, store=0)
 ## Task3: TCP Session Hijacking
 
 manual，手动会话劫持，wireshark看最后的包信息，获取seq ack port，执行后光标会动不了，原因是seq和ack乱了好像
+
+在使用user进行 telnet victim后，通过wireshark工具查看包信息，获取伪装成为 victim 向 user 发送下一个rst包的seq。
 ```python
 #!/usr/bin/env python3
 from scapy.all import *

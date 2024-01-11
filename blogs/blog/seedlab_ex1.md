@@ -7,7 +7,6 @@ cover: /images/covers/red.png
 ---
 
 
-
 ## Task1:FrequencyAnalysis
 
 
