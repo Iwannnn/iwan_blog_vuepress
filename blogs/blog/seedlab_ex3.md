@@ -6,7 +6,7 @@ categories:
 cover: /images/covers/grid.png
 ---
 雨宫哲你是伟大的
-<!--  -->
+<!-- more -->
 ## Task1: SYNFlooding Attack
 
 ###  Task 1.1: Launching the Attack Using Python

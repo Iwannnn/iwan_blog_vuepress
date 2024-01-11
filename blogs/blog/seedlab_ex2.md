@@ -6,7 +6,7 @@ categories:
 cover: /images/covers/mm.png
 ---
 麦!
-<!--  -->
+<!-- more -->
 ## Task 0 env
 docker 搞一搞
 
