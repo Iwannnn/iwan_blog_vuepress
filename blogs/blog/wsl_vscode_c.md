@@ -36,6 +36,19 @@ cover: /images/covers/ba.jpg
 ### VSCode的配置
 
 用```Remote```功能连接到```WSL```后，下载如下插件。配置好```clang-format```的路径，想要的格式什么什么的。
+安装clangd和clangd-format
+
+```bash
+sudo apt-get install clangd-12
+sudo apt-get install clangd-format
+```
+
+替换clangd
+
+```bash
+sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
+```
+
 ![插件选择](./images/0516/extension.png)
 
 
