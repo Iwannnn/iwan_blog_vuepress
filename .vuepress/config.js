@@ -118,9 +118,7 @@ module.exports = {
 			],
 			"/docs/paper/": [
 				"",
-				"AI4Sci.md",
-				"PSDLO.md",
-				"evolutionary.md"
+				"embodied_ai.md",
 			],
 			"/blogs/": []
 		},
