@@ -73,3 +73,42 @@ transform2act, first design, second control
 在上一篇的基础，incorporating symmetry searching into the robot design process.
 
 ## Efficient automatic design of robots
+
+问题： 
+
+1. autonomous robots和生物的差距大，以来人的灵感设计，收到劳动、时间、资源限制。
+2. 以往设计机器人的方法，无论是模拟（使用进化算法搜索等）还是物理实验，效率都很低。每种方法都会使用梯度下降试错，寻找最优解
+3. 确定机器人哪方面问题导致机器人行为的某种低效？并且加以改善是在机器人设计还未解决的
+
+方法：
+
+1. differentiable physical simulators，使用可微分物理模拟器，使得基于梯度的机器人设计成为可能
+2. 提出算法，评估fitness，识别缺陷（整体形状、拓扑结构、肢体数量和形状、质量分布、肌肉结构、行为控制），同时改变优化
+
+
+## Scalable sim-to-real transfer of soft robot designs
+
+模拟到现实的gap，rigid-robot已经要closing了，但是soft还没，并且还wider than rigid
+
+## RoboGrammar: Graph Grammar for Terrain-Optimized Robot Design
+
+问题还是，机器人的design sapce又vast又intractable，要设计新的数据结构来搜索与优化。同时需要emergence of imaginative甚至invention solutions
+
+作者引入一个仿真优化系统，接受用户指定的基本组件，给穿越地形的行为生成一个最优的形态结构和控制器。将机器人用图来表示，引入recursive graph grammar搜索design space。
+
+搜索算法采用了受强化学习启发的基于学习的算法
+
+## Modular Robot Design Optimization with Generative Adversarial Networks
+
+模块化机器人，组件可以加加减减，形成定制机器人。充分利用模块话机器人的灵活性flexibility很有挑战性
+
+需要对给定的任务都给出最优的形态，并且在有限的时间和计算下
+
+先前工作使用机器学习，实现以一对一的从任务到设计的映射。
+
+问题：机器人设计通常是多模态的，不同设计可能对同样的任务效果差不多，对于同一个任务多个解是有需求的
+
+文章使用GAN，设计一个任务到设计分布的一对多的map。
+
+传统设计模块机器人形态用的群体的方法比较多，如进化算法，但是性能差，计算昂贵。
+近期工作用到了机器学习，面对是否进行过训练的样本任务都能够及时给出结果（zero-shot），但是可能不是最优的。而且呢实际场景需要一个Plan B啥的
