@@ -112,3 +112,11 @@ transform2act, first design, second control
 
 传统设计模块机器人形态用的群体的方法比较多，如进化算法，但是性能差，计算昂贵。
 近期工作用到了机器学习，面对是否进行过训练的样本任务都能够及时给出结果（zero-shot），但是可能不是最优的。而且呢实际场景需要一个Plan B啥的
+
+作者搞了个算法，结合进化算法（解决方案的质量和多样性）和机器学习（低运行时间成本）
+
+与以往GAN不同没有先验数据，而且对于机器人来说这种先验数据很难收集，作者采用受进化算法启发的在新颖的自引导数据创建过程，在线主动收集数据
+
+- Evolutionary Algorithms：能找到多个解，过于耗时
+- Learning-Based Design Automation： 快，部署快，通常方法只会找个单一解
+- Generative Models：task to design
