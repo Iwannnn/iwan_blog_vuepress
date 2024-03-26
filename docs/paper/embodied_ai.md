@@ -64,7 +64,8 @@ MetaMorph，基于transformer的，在模块化机器人设计空间上学习通
 
 transform2act, first design, second control
 
-**transform stage**: 不与环境交互变换形态
+
+**transform stage**: 不与环境交互变换形态no env reward
 
 **execution stage**：使用上一阶段设计，电机控制与环境交互获取奖励
 
@@ -120,3 +121,7 @@ transform2act, first design, second control
 - Evolutionary Algorithms：能找到多个解，过于耗时
 - Learning-Based Design Automation： 快，部署快，通常方法只会找个单一解
 - Generative Models：task to design
+
+## GLSO: Grammar-guided Latent Space Optimization for Sample-efficient Robot Design Automation
+
+通过训练一个变分自动编码器学习design space到连续的latent sapce的映射
