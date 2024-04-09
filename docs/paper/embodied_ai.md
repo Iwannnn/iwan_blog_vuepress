@@ -14,10 +14,6 @@ tags:
 <!-- more -->
 
 
-
-
-
-
 ## topic 1
 
 
@@ -81,54 +77,8 @@ transform2act, first design, second control
 
 在上一篇的基础，incorporating symmetry searching into the robot design process.
 
-## 其他
-
-### Efficient automatic design of robots
-
-问题： 
-
-1. autonomous robots和生物的差距大，以来人的灵感设计，收到劳动、时间、资源限制。
-2. 以往设计机器人的方法，无论是模拟（使用进化算法搜索等）还是物理实验，效率都很低。每种方法都会使用梯度下降试错，寻找最优解
-3. 确定机器人哪方面问题导致机器人行为的某种低效？并且加以改善是在机器人设计还未解决的
-
-方法：
-
-1. differentiable physical simulators，使用可微分物理模拟器，使得基于梯度的机器人设计成为可能
-2. 提出算法，评估fitness，识别缺陷（整体形状、拓扑结构、肢体数量和形状、质量分布、肌肉结构、行为控制），同时改变优化
 
 
-### Scalable sim-to-real transfer of soft robot designs
-
-模拟到现实的gap，rigid-robot已经要closing了，但是soft还没，并且还wider than rigid
-
-
-
-## Modular Robot Design Optimization with Generative Adversarial Networks
-
-模块化机器人，组件可以加加减减，形成定制机器人。充分利用模块话机器人的灵活性flexibility很有挑战性
-
-需要对给定的任务都给出最优的形态，并且在有限的时间和计算下
-
-先前工作使用机器学习，实现以一对一的从任务到设计的映射。
-
-问题：机器人设计通常是多模态的，不同设计可能对同样的任务效果差不多，对于同一个任务多个解是有需求的
-
-文章使用GAN，设计一个任务到设计分布的一对多的map。
-
-传统设计模块机器人形态用的群体的方法比较多，如进化算法，但是性能差，计算昂贵。
-近期工作用到了机器学习，面对是否进行过训练的样本任务都能够及时给出结果（zero-shot），但是可能不是最优的。而且呢实际场景需要一个Plan B啥的
-
-作者搞了个算法，结合进化算法（解决方案的质量和多样性）和机器学习（低运行时间成本）
-
-与以往GAN不同没有先验数据，而且对于机器人来说这种先验数据很难收集，作者采用受进化算法启发的在新颖的自引导数据创建过程，在线主动收集数据
-
-- Evolutionary Algorithms：能找到多个解，过于耗时
-- Learning-Based Design Automation： 快，部署快，通常方法只会找个单一解
-- Generative Models：task to design
-
-## GLSO: Grammar-guided Latent Space Optimization for Sample-efficient Robot Design Automation
-
-通过训练一个变分自动编码器学习design space到连续的latent sapce的映射
 
 ## topic 2
 
@@ -153,8 +103,7 @@ transform2act, first design, second control
 
 学习一个单独的应用于海量形态的控制器的难点：
 
-1. 不同的action sapce、传感器输入、形态、动力学
-2. 在一个模块化设计空间中，并非所有的机器人都同样擅长学习任务，例如，一些机器人可能天生就不那么样本高效
+1. 不同的action sapce、传感器输入、形态、动力学2. 在一个模块化设计空间中，并非所有的机器人都同样擅长学习任务，例如，一些机器人可能天生就不那么样本高效
 
 #### 方法
 
@@ -167,6 +116,12 @@ However, the modular nature of the design space implies that while each robot mo
 4. 将transformer的输出和外部感知串联
 5. 输入到解码器中获得每个关节的输出即对应的指令
 
+
+### RoboGrammar: Graph Grammar for Terrain-Optimized Robot Design
+
+1. 递归图语法表示机器人结构-构成前端，将所有机器人结构的搜索空间限制为易于处理且有意义的子集。
+2. 图启发式搜索算法
+3. 模型预测控制MPC
 
 ### Modular Robot Design Optimization with Generative Adversarial Networks
 
@@ -194,3 +149,52 @@ However, the modular nature of the design space implies that while each robot mo
 ### GLSO: Grammar-guided Latent Space Optimization for Sample-efficient Robot Design Automation
 
 通过训练一个变分自动编码器学习design space到连续的latent sapce的映射
+
+
+
+## 其他
+
+### Efficient automatic design of robots
+
+问题： 
+
+1. autonomous robots和生物的差距大，以来人的灵感设计，收到劳动、时间、资源限制。
+2. 以往设计机器人的方法，无论是模拟（使用进化算法搜索等）还是物理实验，效率都很低。每种方法都会使用梯度下降试错，寻找最优解
+3. 确定机器人哪方面问题导致机器人行为的某种低效？并且加以改善是在机器人设计还未解决的
+
+方法：
+
+1. differentiable physical simulators，使用可微分物理模拟器，使得基于梯度的机器人设计成为可能
+2. 提出算法，评估fitness，识别缺陷（整体形状、拓扑结构、肢体数量和形状、质量分布、肌肉结构、行为控制），同时改变优化
+
+
+### Scalable sim-to-real transfer of soft robot designs
+
+模拟到现实的gap，rigid-robot已经要closing了，但是soft还没，并且还wider than rigid
+
+### MY BODY IS A CAGE: THE ROLE OF MORPHOLOGY IN GRAPH-BASED INCOMPATIBLE CONTROL
+
+1. 多认为强化学习局限于兼容（状态空间和动作空间）环境，图神经网络可以处理任大小的graph
+2. 消融实验，在图中的形态编码信息并没有提高性能
+3. 图结构的好处可能被消息传递的困难所抵消，作者提出基于transformer的方法
+
+### DITTOGYM: LEARNING TO CONTROL SOFT SHAPESHIFTING ROBOTS
+
+启发：生物个体的形态，在其一生中也是不断变化的。可重构机器人
+
+1. 如何模拟reconfiguration robot，如何对其行动进行参数化，连续2d肌肉场下的强化学习问题
+2. 传统控制方法不适用与软体机器人，强化学习在非结构化的控制问题表现出色，但是需要更加精细的操作。提出有粗到细的策略
+3. 没有标准基础 standard benchmark，提出dittogym，评估在需要动态形态变化的复杂任务中控制可变形软体机器人的控制算法。
+
+### EnvGen: Generating and Adapting Environments via LLMs for Training Embodied Agents
+
+在某个环境下决定如何行动、学习技能（通过玩游戏验证），智能体与环境交互而不是与静态数据交互
+
+别人的方法：
+
+1. 使用LLM学习技能，频繁调用LLM代价高
+2. 使用small agent进行强化学习
+
+作者的方法
+
+运用LLM的推理能力创造env，帮助small agent训练，并获得反馈给LLM重新生成环境训练
