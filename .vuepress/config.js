@@ -113,12 +113,6 @@ module.exports = {
 				"202210.md",
 				"202211.md",
 				"202212.md",
-				"202302.md",
-				"202403.md",
-			],
-			"/docs/paper/": [
-				"",
-				"embodied_ai.md",
 			],
 			"/blogs/": []
 		},
