@@ -60,6 +60,25 @@ default=iwan
 ```.vimrc
 inoremap jk <ESC>
 ```
+## 安装 nodejs
 
+由于想要在vscode连wsl刷leetcode，所以要安个nodejs，不太有版本要求所以就怎么方便怎么来了
+1. 更新 
+```bash
+sudo apt update
+```
 
+2. 安装nodejs
+
+```bash
+sudo apt install nodejs
+```
+3. 安装npm
+```bash
+sudo apt install npm
+```
+4. 验证
+```bash
+node -v
+```
 
