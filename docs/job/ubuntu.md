@@ -62,6 +62,7 @@ inoremap jk <ESC>
 ```
 ## 安装 nodejs
 
+### apt安装
 由于想要在vscode连wsl刷leetcode，所以要安个nodejs，不太有版本要求所以就怎么方便怎么来了
 1. 更新 
 ```bash
@@ -81,4 +82,18 @@ sudo apt install npm
 ```bash
 node -v
 ```
+
+## 配置c环境
+
+1. 比较喜欢用clang，因为刚上本科的时候觉得codeblock devc++啥的界面太丑，然后就改成vscode了，第一次看到的帖子就是用clang的
+```bash
+sudo apt install clang clangd lldb cmake clang-format
+```
+2. vscode安装插件，clang cmake cmaketools clang-format啥的，cmaketools可能要vsix安装
+3. 使用cmake新建一个项目，修改插件配置，再clangd的argument里加入
+```
+--compile-commands-dir=${workspaceFolder}/build
+```
+4. 生成launch文件，直接f5 main.cpp会自己生成，然后把program路径改成build下生成的可执行文件就好了
+5. 配置clang-format， 风格改为Google，修改默认的format配置文件为clang-format
 
