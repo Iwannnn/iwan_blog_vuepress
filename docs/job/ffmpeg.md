@@ -108,6 +108,17 @@ categories:
 | **AMR-NB/WB** | Adaptive Multi-Rate       | 有损     | 极低 | 手机语音通信         | GSM/VoLTE 通信编码标准              |
 
 
+常见的容器格式
+| 容器格式 | 可封装的视频编码        | 可封装的音频编码       |
+| -------- | ----------------------- | ---------------------- |
+| MP4      | H.264, H.265, AV1       | AAC, MP3, Opus         |
+| MKV      | H.264, VP9, AV1, MPEG-2 | AAC, MP3, Vorbis, FLAC |
+| AVI      | MPEG-4, H.264           | MP3, PCM               |
+| FLV      | H.263, H.264            | MP3, AAC               |
+| TS       | H.264, H.265            | AAC, AC3               |
+| MOV      | H.264, ProRes           | AAC, PCM, ALAC         |
+
+
 > 编码压缩数据以便传输或保存，解码还原数据以便播放或处理。没有编码，视频文件无法高效传播；没有解码，就无法播放它。
 
 > SDL 是一个 C 语言编写的跨平台开发库，常用于音视频播放、图形渲染和事件处理。
@@ -120,4 +131,128 @@ categories:
 | **事件处理**   | 支持键盘、鼠标、窗口关闭等用户交互              |
 | **跨平台支持** | 一次编写，运行在 Windows、Linux、macOS、Android |
 
+**采样**
+
+采样是将连续的模拟音频信号（analog），以固定时间间隔测量并记录成**数字信号（digital）**的过程。
+| 参数       | 说明                                     |
+| ---------- | ---------------------------------------- |
+| **采样率** | 每秒采样次数，单位为 Hz（赫兹）          |
+| **位深**   | 每个采样点的精度，单位为 bit（如 16bit） |
+
+**重采样**
+
+重采样是将已有的数字音频从一个采样率或通道格式转换为另一种采样率或格式的过程。
+
+- 把 48000 Hz 转换为 44100 Hz（向下重采样）
+- 把单声道变为双声道（通道重采样）
+- 把 float32 格式变为 int16（格式重采样）
+
+
+
+#### ffmpeg 命令行操作 
+
+linux 安装
+
+```bash
+sudo apt update
+sudo apt install -y \
+  ffmpeg \
+  libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
+  libsdl2-dev \
+  libx264-dev libx265-dev libvpx-dev libfdk-aac-dev libmp3lame-dev libopus-dev \
+  libass-dev libfreetype6-dev libvorbis-dev \
+  pkg-config build-essential cmake git
+```
+
+| 库名                | 用途说明                                   |
+| ------------------- | ------------------------------------------ |
+| `ffmpeg`            | 命令行工具，包含 `ffprobe`、`ffplay`       |
+| `libavcodec-dev`    | 编解码库（视频/音频解码器）                |
+| `libavformat-dev`   | 封装/解封装库（MP4、FLV、MKV 等）          |
+| `libavutil-dev`     | 工具函数库（时间戳、颜色转换）             |
+| `libswscale-dev`    | 视频缩放、像素格式转换                     |
+| `libswresample-dev` | 音频重采样                                 |
+| `libsdl2-dev`       | 视频渲染/音频播放（配合 FFmpeg 播放器）    |
+| `libx264-dev`       | H.264 编码器                               |
+| `libx265-dev`       | H.265 编码器                               |
+| `libvpx-dev`        | VP8/VP9 编码器                             |
+| `libfdk-aac-dev`    | 高质量 AAC 编码器（需 `--enable-nonfree`） |
+| `libmp3lame-dev`    | MP3 编码器                                 |
+| `libopus-dev`       | WebRTC 用音频编码器                        |
+| `libass-dev`        | ASS 字幕渲染                               |
+| `libfreetype6-dev`  | 字体渲染（用于水印/字幕）                  |
+| `libvorbis-dev`     | OGG/Vorbis 音频编码器                      |
+| `pkg-config`        | 自动查找编译依赖                           |
+| `build-essential`   | GCC、g++ 等基础开发工具链                  |
+| `cmake`, `git`      | 编译构建与源码管理工具                     |
+
+
+```bash
+ffmpeg [global_options] -i [input_file] [input_options] [processing_options] [output_options] [output_file]
+```
+
+
+常用命令 
+
+
+| 操作类别               | 命令示例                                                                                              | 说明                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **查看信息**           | `ffprobe input.mp4`                                                                                   | 显示媒体详细信息                                                             |
+| **转码为 MP4**         | `ffmpeg -i input.avi output.mp4`                                                                      | 转码为 H.264/AAC 编码的 MP4                                                  |
+| **指定编码器转码**     | `ffmpeg -i input.mp4 -c:v libx264 -c:a aac output.mp4`                                                | 手动设置视频/音频编码器                                                      |
+| **调整码率**           | `ffmpeg -i input.mp4 -b:v 1000k -b:a 128k output.mp4`                                                 | 设置视频/音频目标码率                                                        |
+| **调整帧率**           | `ffmpeg -i input.mp4 -r 30 output.mp4`                                                                | 设置输出帧率为 30 fps                                                        |
+| **调整分辨率**         | `ffmpeg -i input.mp4 -s 1280x720 output.mp4`                                                          | 缩放为 720p                                                                  |
+| **提取音频**           | `ffmpeg -i input.mp4 -vn -c:a copy output.aac`                                                        | 仅保留音频轨 -vn(video none)                                                 |
+| **提取视频**           | `ffmpeg -i input.mp4 -an -c:v copy output.h264`                                                       | 仅保留视频轨 -av(audio none)                                                 |
+| **音频转 WAV**         | `ffmpeg -i input.aac output.wav`                                                                      | 转为未压缩音频                                                               |
+| **静音处理**           | `ffmpeg -i input.mp4 -an output.mp4`                                                                  | 移除音频轨                                                                   |
+| **添加静音音轨**       | `ffmpeg -f lavfi -i anullsrc -i input.mp4 -shortest -c:v copy -c:a aac output.mp4`                    | 为无声视频添加静音  -f lavfi 使用 libavfilter 作为输入  -i anullsrc 虚拟输入 |
+| **截取片段**           | `ffmpeg -ss 00:01:00 -i input.mp4 -t 10 -c copy clip.mp4`                                             | 从 1 分钟处截取 10 秒                                                        |
+| **视频截图**           | `ffmpeg -ss 00:00:01 -i input.mp4 -frames:v 1 shot.png`                                               | 截取指定时间帧                                                               |
+| **视频转图片序列**     | `ffmpeg -i input.mp4 img_%04d.jpg`                                                                    | 每帧输出为图片  %04d                                                         |
+| **图片序列转视频**     | `ffmpeg -framerate 25 -i img_%04d.jpg -c:v libx264 output.mp4`                                        | 25fps 合成视频                                                               |
+| **裁剪视频区域**       | `ffmpeg -i input.mp4 -filter:v "crop=640:360:0:0" output.mp4`                                         | 裁剪左上角 640×360 区域                                                      |
+| **合并音视频**         | `ffmpeg -i video.mp4 -i audio.aac -c:v copy -c:a copy output.mp4`                                     | 封装合并                                                                     |
+| **拼接视频（同编码）** | `ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4`                                                | 快速拼接                                                                     |
+| **推流 RTMP**          | `ffmpeg -re -i input.mp4 -c:v libx264 -f flv rtmp://...`                                              | 本地文件推送到 RTMP 流媒体服务器                                             |
+| **添加字幕**           | `ffmpeg -i input.mp4 -vf subtitles=sub.srt output.mp4`                                                | 内嵌软字幕                                                                   |
+| **变速播放**           | `ffmpeg -i input.mp4 -vf "setpts=0.5*PTS" output.mp4`                                                 | 快放（2 倍速）                                                               |
+| **视频加水印**         | `ffmpeg -i input.mp4 -i logo.png -filter_complex "overlay=10:10" output.mp4`                          | 左上角加水印                                                                 |
+| **转为 HLS**           | `ffmpeg -i input.mp4 -f hls -hls_time 10 -hls_list_size 0 -hls_segment_filename seg_%03d.ts out.m3u8` | 生成分片和索引用于直播                                                       |
+
+参数
+| 参数           | 说明                                                 | 默认值（如未指定）                                                                                                                                                     |
+| -------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-i`           | 指定输入文件（input）                                | 必填，无默认值                                                                                                                                                         |
+| `-ss`          | 指定起始时间（用于截取/跳转）seek start              | `0`（从开头开始）                                                                                                                                                      |
+| `-t`           | 指定持续时间（配合 `-ss` 截取片段）                  | 到文件末尾                                                                                                                                                             |
+| `-to`          | 指定结束时间（`-ss` 到 `-to`）                       | 到文件末尾                                                                                                                                                             |
+| `-c`           | 同时设置音频和视频的编码器（codec）                  | 自动选择（mp4 → `libx264` + `aac`）                                                                                                                                    |
+| `-c:v`         | 指定视频编码器，如 `libx264`                         | 依容器类型自动选择（如 `libx264`）                                                                                                                                     |
+| `-c:a`         | 指定音频编码器，如 `aac`                             | 依容器类型自动选择（如 `aac`）                                                                                                                                         |
+| `-vn`          | 不处理视频（video none）                             | 默认处理视频                                                                                                                                                           |
+| `-an`          | 不处理音频（audio none）                             | 默认处理音频                                                                                                                                                           |
+| `-sn`          | 不处理字幕（subtitle none）                          | 默认处理字幕                                                                                                                                                           |
+| `-r`           | 设置帧率（frame rate）                               | 跟随输入帧率                                                                                                                                                           |
+| `-s`           | 设置分辨率，如 `1280x720`                            | 跟随输入尺寸                                                                                                                                                           |
+| `-b:v`         | 设置视频码率（bitrate）                              | 自动估算（CRF 编码时不需设定）                                                                                                                                         |
+| `-b:a`         | 设置音频码率                                         | 自动估算（通常如 `128k`、`192k`）                                                                                                                                      |
+| `-f`           | 指定格式（format），如 `mp4`、`flv`                  | 自动识别（根据输入/输出文件扩展名） 强制指定输入或输出的封装格式（format）常用于输入为虚拟格式（如 lavfi, concat），输出不带扩展名或需手动设定格式（如 flv, hls, mp4） |
+| `-filter:v`    | 设置视频滤镜（如 `crop`、`scale`）                   | 无过滤器（原始传递）                                                                                                                                                   |
+| `-filter:a`    | 设置音频滤镜（如 `volume`）                          | 无过滤器                                                                                                                                                               |
+| `-map`         | 精确指定输入的哪些流要输出                           | 自动选择主流（如第一个音视频）                                                                                                                                         |
+| `-threads`     | 设置使用线程数量                                     | 自动检测 CPU 线程                                                                                                                                                      |
+| `-y`           | 自动覆盖已有文件（不提示）                           | 默认 `false`（需确认）                                                                                                                                                 |
+| `-n`           | 若输出文件已存在则不执行（no overwrite）             | 默认 `false`（允许覆盖）                                                                                                                                               |
+| `-hide_banner` | 隐藏启动时版权和配置信息                             | 默认显示                                                                                                                                                               |
+| `-loglevel`    | 设置日志级别，如 `quiet`、`info`、`error`            | `info`                                                                                                                                                                 |
+| `-re`          | 以实际速度读取输入（用于推流）                       | 默认关闭                                                                                                                                                               |
+| `-vf`          | 视频滤镜（video filter）的快捷写法（同 `-filter:v`） | 同 `-filter:v`                                                                                                                                                         |
+| `-af`          | 音频滤镜（audio filter）的快捷写法（同 `-filter:a`） | 同 `-filter:a`                                                                                                                                                         |
+| `-movflags`    | 设置 MP4 特性，如 `faststart` 优化网页加载           | 默认不设置（需显式添加）                                                                                                                                               |
+| `-preset`      | 编码速度设置（`ultrafast` → `veryslow`）             | `medium`（x264/x265 默认）                                                                                                                                             |
+| `-crf`         | 设置恒定质量值（常用于 x264 编码，范围 0–51）        | `23`（推荐范围 18–28）                                                                                                                                                 |
+| `-profile:v`   | 设置视频编码的 profile（如 `main`、`high`）          | 由编码器自动选择                                                                                                                                                       |
+| `-level`       | 设置编码等级（如 `4.0`、`5.1`）                      | 由编码器自动选择                                                                                                                                                       |
 
