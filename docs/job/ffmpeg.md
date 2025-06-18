@@ -256,3 +256,40 @@ ffmpeg [global_options] -i [input_file] [input_options] [processing_options] [ou
 | `-profile:v`   | 设置视频编码的 profile（如 `main`、`high`）          | 由编码器自动选择                                                                                                                                                       |
 | `-level`       | 设置编码等级（如 `4.0`、`5.1`）                      | 由编码器自动选择                                                                                                                                                       |
 
+#### ffmpeg 源码
+
+##### stage1 主控流程
+
+```scss
+main()
+├── init_dynload()
+├── av_log_set_flags()
+├── parse_loglevel()
+├── avdevice_register_all()
+├── avformat_network_init()
+├── show_banner()
+├── sch = sch_alloc()
+├── ffmpeg_parse_options()      ← 参数解析 & 打开输入输出
+├── 检查输入输出是否为空
+├── get_benchmark_time_stamps()
+├── transcode()                 ← 关键转换流程
+├── get_benchmark_time_stamps()
+├── ffmpeg_cleanup()
+└── sch_free()
+```
+
+transcode这个部分会启动并且执行任务
+
+| 阶段   | 执行线程     | 操作内容（操作码）             | 代表函数/结构                                                         | 典型命令示例                                                   |
+| ------ | ------------ | ------------------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Demux  | Demux 线程   | 拆包（读取媒体文件或流）       | `avformat_read_frame`                                                 | `ffmpeg -i input.mp4`                                          |
+| Decode | Decoder 线程 | 解码（压缩数据 → 原始帧）      | `avcodec_send_packet`, `avcodec_receive_frame`                        | `ffmpeg -i input.mp4 -c:v rawvideo -f null -`                  |
+| Filter | Filter 线程  | 滤镜处理（剪辑、缩放、裁剪等） | `av_buffersrc_add_frame`, `avfilter_graph`, `av_buffersink_get_frame` | `ffmpeg -i input.mp4 -vf "trim=start=10:end=20,scale=640:360"` |
+| Encode | Encoder 线程 | 编码（原始帧 → 压缩包）        | `avcodec_send_frame`, `avcodec_receive_packet`                        | `ffmpeg -i input.mp4 -c:v libx264 -crf 23 output.mp4`          |
+| Mux    | Muxer 线程   | 封装为输出文件或推流           | `avformat_write_header`, `av_write_frame`, `av_write_trailer`         | `ffmpeg -i input.mp4 -f flv rtmp://server/live/stream`         |
+
+##### stage2 封装模块 mux demux
+
+##### stage3 编码模块 encode decode
+
+##### stage4 滤镜模块 filter
