@@ -117,7 +117,8 @@ module.exports = {
 			],
 			"/docs/jobs/": [
 				"",
-				"ubuntu.md"
+				"ubuntu.md",
+				"webrtc.md"
 			],
 			"/blogs/": []
 		},
