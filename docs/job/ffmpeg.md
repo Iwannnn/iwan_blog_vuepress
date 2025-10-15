@@ -2,7 +2,7 @@
 
 title: cpp音视频开发
 date: 2024-06-17
-cover: /images/covers/
+cover: /images/covers/na.jpg
 categories:
  - job
 

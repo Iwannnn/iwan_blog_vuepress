@@ -605,6 +605,423 @@ int AudioProcessor::process_frame(AVFrame *frame, AVCodecContext *codec_ctx,
 
 ## webrtc推流
 
+### 主要流程
+
+1. 首先是WebRTCConnection类，这推流端使用libdatachannel封装的一个WebRTC会话控制器，主要负责PeerConnection 管理（会话建立、STUN 服务器、ICE 流程），SDP的生成和处理，媒体轨道创建和绑定H.264视频，视频帧的打包发送。
+
+在设定本地的媒体轨道的时候是参考examples里的方法绑定的rtp分包器，这才和浏览器的协议匹配起来。
+
+```cpp
+WebRTCConnection::WebRTCConnection(bool is_caller) {
+  rtc::Configuration config;
+
+  // 添加 STUN server
+  config.iceServers.emplace_back("stun:stun.l.google.com:19302");
+
+  peer_connection = std::make_shared<rtc::PeerConnection>(config);
+
+  // 连接状态变化
+  peer_connection->onStateChange([](rtc::PeerConnection::State state) {
+    qDebug() << "PeerConnection state: " << static_cast<int>(state);
+  });
+
+  // ICE 状态变化
+  peer_connection->onGatheringStateChange(
+      [](rtc::PeerConnection::GatheringState state) {
+        qDebug() << "ICE Gathering: " << static_cast<int>(state);
+      });
+
+  // 收到本地 SDP
+  peer_connection->onLocalDescription([this](const rtc::Description& desc) {
+    qDebug() << "onLocalDescription";
+    std::string sdp = std::string(desc);
+    if (on_local_description_) {
+      on_local_description_(sdp);
+    }
+  });
+
+  peer_connection->onLocalCandidate([this](const rtc::Candidate& cand) {
+    qDebug() << "onLocalCandidate";
+    if (on_local_candidate_) {
+      on_local_candidate_(std::string(cand), cand.mid());
+    }
+  });
+
+  peer_connection->onTrack([this](std::shared_ptr<rtc::Track> track) {
+    qDebug() << "onTrack";
+    const auto& desc = track->description();
+    if (dynamic_cast<const rtc::Description::Video*>(&desc)) {
+      qDebug() << "[WebRTC] Remote video track added. MID = "
+               << QString::fromStdString(track->mid());
+      // 设置接收视频帧的回调
+      track->onFrame([this](const rtc::binary& data, rtc::FrameInfo info) {
+        if (on_remote_frame_) {
+          on_remote_frame_(data);
+        }
+      });
+    }
+  });
+
+  peer_connection->onIceStateChange([](rtc::PeerConnection::IceState state) {
+    qDebug() << "ICE state: " << static_cast<int>(state);
+  });
+
+  if (is_caller) {
+    create_video_track();  // 保留这行即可
+  }
+}
+
+void WebRTCConnection::create_offer() {
+  peer_connection
+      ->setLocalDescription();  // 触发 onLocalDescription 回调 创建本地sdp
+}
+
+void WebRTCConnection::create_video_track() {
+  rtc::Description::Video video("video", rtc::Description::Direction::SendRecv);
+  video.addH264Codec(96);
+  video_track = peer_connection->addTrack(video);
+
+  // ✅ 构建 RTP 配置
+  uint32_t ssrc = 20001206;      // 可以随机一个
+  std::string cname = "video";   // 一般用于 RTCP 的同步字段
+  std::string msid = "stream1";  // media stream ID
+  uint8_t payload_type = 96;
+  uint32_t clock_rate = 90000;  // H264 标准时钟频率
+
+  rtp_config_ = std::make_shared<rtc::RtpPacketizationConfig>(
+      ssrc, cname, payload_type, clock_rate);
+
+  packetizer_ = std::make_shared<rtc::H264RtpPacketizer>(
+      rtc::NalUnit::Separator::Length,
+      rtp_config_); 
+
+  video_track->setMediaHandler(packetizer_);
+}
+
+void WebRTCConnection::set_remote_description(const std::string& sdp,
+                                              bool is_offer) {
+  qDebug() << "set remote sdp";
+  rtc::Description::Type type =
+      is_offer ? rtc::Description::Type::Offer : rtc::Description::Type::Answer;
+  rtc::Description desc(sdp, type);
+
+  peer_connection->setRemoteDescription(desc);
+  auto remote_desc = peer_connection->remoteDescription();
+  if (remote_desc) {
+    std::string sdp = static_cast<std::string>(*remote_desc);
+    qDebug() << "[Full Remote SDP]\n" << QString::fromStdString(sdp);
+  }
+}
+
+void WebRTCConnection::send_video_frame(const rtc::binary& frame_data,
+                                        const rtc::FrameInfo& info) {
+  // qDebug() << "send callback";
+
+  if (!video_track || !video_track->isOpen()) return;
+
+  // QString hex;
+  // for (size_t i = 0; i < std::min<size_t>(frame_data.size(), 16); ++i) {
+  //   hex += QString::asprintf("%02X ", static_cast<uint8_t>(frame_data[i]));
+  // }
+
+  // qDebug() << "发送帧 HEX:" << hex;
+
+  video_track->sendFrame(frame_data, info);
+}
+
+void WebRTCConnection::add_ice_candidate(const std::string& candidate,
+                                         const std::string& sdp_mid) {
+  if (!peer_connection) return;
+
+  rtc::Candidate cand(candidate, sdp_mid);
+  cand.resolve();
+  peer_connection->addRemoteCandidate(cand);
+  std::cout << "Added ICE candidate:" << cand.candidate() << std::endl;
+}
+```
+
+2. 回调函数的一些设置和程序调用，```on_local_description_```是用来生成并且发送本地的sdp，```on_local_candidate_```是用来生成并且发送本地的ice。
+
+连接信令服务器并创建 Offer，WebSocket 连接成功后：webrtc_->create_offer(); 触发 PC 生成本地 SDP，从而走到上面的两个回调。  
+
+摄像头采集，```frame_ready``` 槽函数只是做本地 UI 显示，```set_webrtc_callback(...)``` 里把编码好的 H.264 数据和对应 FrameInfo 交给 ```webrtc_->send_video_frame(...)```，由 libdatachannel 的 H264 packetizer 封包后通过 SRTP 发送。
+
+```cpp
+void MainWindow::on_btnStartWebRTC_clicked() {
+  if (camera_) {
+    qDebug() << "摄像头已在运行";
+    return;
+  }
+
+  // 1. 创建 WebRTCConnection（推流方）
+  webrtc_ = new WebRTCConnection(true);
+
+  webrtc_->on_local_description_ = [=](const std::string &sdp) {
+    if (!ws_connected_) {
+      qWarning() << "WebSocket 尚未连接，跳过 SDP 发送";
+      return;
+    }
+
+    QJsonObject msg;
+    msg["type"] = "offer";
+    msg["sdp"] = QString::fromStdString(sdp);
+    QJsonDocument doc(msg);
+
+    qDebug() << "发送 SDP Offer";
+    ws_.sendTextMessage(QString::fromUtf8(doc.toJson()));
+    ws_.flush();
+  };
+
+  webrtc_->on_local_candidate_ = [=](const std::string &candidate,
+                                     const std::string &mid) {
+    QJsonObject msg;
+    msg["type"] = "candidate";
+    msg["candidate"] = QString::fromStdString(candidate);
+    msg["sdpMid"] = QString::fromStdString(mid);
+    msg["sdpMLineIndex"] = 0;      // 你可以适配实际值
+    msg["usernameFragment"] = "";  // libdatachannel 不使用 ufrag
+
+    QJsonDocument doc(msg);
+    qDebug() << "发送本地 ICE candidate";
+    ws_.sendTextMessage(QString::fromUtf8(doc.toJson()));
+    ws_.flush();
+  };
+
+  webrtc_->on_remote_frame_ = [](const rtc::binary &data) {
+    qDebug() << "收到远端帧，大小:" << data.size();
+  };
+
+  // 2. 启动摄像头并连接到 WebRTC 推流
+  camera_ = new CameraCapture(this);
+  connect(camera_, &CameraCapture::frame_ready, this, [=](const QImage &img) {
+    if (!img.isNull()) {
+      ui->labelLocalVideo->setPixmap(QPixmap::fromImage(img).scaled(
+          ui->labelLocalVideo->size(), Qt::KeepAspectRatio,
+          Qt::SmoothTransformation));
+    }
+  });
+
+  camera_->set_webrtc_callback(
+      [=](const rtc::binary &data, const rtc::FrameInfo &info) {
+        if (webrtc_) webrtc_->send_video_frame(data, info);
+      });
+
+  camera_->start();
+
+  // 3. 建立 WebSocket 信令连接（成功后 create_offer）
+  connect_signaling_server();
+
+  qDebug() << "摄像头与 WebRTC 推流已启动";
+}
+
+void MainWindow::connect_signaling_server() {
+  connect(&ws_, &QWebSocket::connected, this, [=]() {
+    ws_connected_ = true;
+    qDebug() << "WebSocket signaling connected";
+
+    if (webrtc_) {
+      qDebug() << "创建 SDP offer";
+      webrtc_->create_offer();
+    }
+  });
+
+  connect(&ws_, &QWebSocket::disconnected, this, [=]() {
+    ws_connected_ = false;
+    qDebug() << "WebSocket signaling disconnected";
+  });
+
+  connect(&ws_, &QWebSocket::textMessageReceived, this,
+          &MainWindow::on_signaling_message);
+
+  ws_.open(QUrl("ws://localhost:8888"));
+}
+```
+
+1. camera类，需要先启动线程，从cap获取数据，本地预览要先把图像格式从bgr转为rgb构造QImage再通过frame_ready发送给qt。推流需要的把图像编码为H264的格式，通过```send_webrtc_frame_```回调交给```WebRTCConnection::send_video_frame()```。
+
+```cpp
+CameraCapture::CameraCapture(QObject* parent)
+    : QThread(parent), running_(false) {}
+
+CameraCapture::~CameraCapture() {
+  stop();
+  wait();
+  if (h264encoder_) {
+    delete h264encoder_;
+    h264encoder_ = nullptr;
+  }
+}
+
+void CameraCapture::stop() {
+  QMutexLocker locker(&mutex_);
+  running_ = false;
+}
+
+void CameraCapture::run() {
+  cv::VideoCapture cap(0);
+  if (!cap.isOpened()) {
+    qDebug() << "摄像头启动失败";
+    return;
+  }
+
+  running_ = true;
+
+  int width = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+  int height = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+  int fps = 30;
+
+  H264Encoder h264encoder(width, height, fps);
+
+  while (running_) {
+    cv::Mat bgr_frame;
+    cap >> bgr_frame;
+    if (bgr_frame.empty()) continue;
+
+    // 本地播放（注意：不能直接改 bgr_frame 否则影响编码）
+    cv::Mat rgb_frame;
+    cv::cvtColor(bgr_frame, rgb_frame, cv::COLOR_BGR2RGB);
+    QImage img(rgb_frame.data, rgb_frame.cols, rgb_frame.rows, rgb_frame.step,
+               QImage::Format_RGB888);
+    emit frame_ready(img.copy());
+
+    auto encoded = h264encoder.encode(bgr_frame);
+    if (!encoded.data.empty() && send_webrtc_frame_) {
+      rtc::binary frame(encoded.data.begin(), encoded.data.end());
+      rtc::FrameInfo info(static_cast<uint32_t>(encoded.timestamp_us / 1000));
+      send_webrtc_frame_(frame, info);
+    }
+
+    QThread::msleep(1000 / fps);
+  }
+
+  cap.release();
+}
+
+void CameraCapture::set_webrtc_callback(
+    std::function<void(const rtc::binary&, const rtc::FrameInfo&)> cb) {
+  send_webrtc_frame_ = std::move(cb);
+}
+```
+
+3. H264编码器，初始化的部分，先要找H264的codec，并且为其分配上下文，并且设置上下文信息。关闭Annex-B，意味着输出为 AVCC（length-prefixed），适合 WebRTC 的 H264RtpPacketizer(NalUnit::Separator::Length)。并且设定好从BGR转为YUV420P的sws_ctx
+
+通过sws_scale，将相机得到的bgr转换并且写到frame_data转换为yuv420p的格式，然后通过send_frame和receive_packet得到h264编码后的AVPacket，并将其中的data作为结果与时间结合得到输出，通过之前设定的回调```send_video_frame```送给RTPPacketization来进行分包发送。
+
+>YUV420P 是一种未压缩的像素格式，H.264 是一种视频压缩编码标准。H.264 编码器的输入通常就是 YUV420P（或其它 YUV 变种），输出则是压缩后的小体积码流。
+
+```cpp
+
+struct EncodedFrame {
+  std::vector<std::byte> data;
+  uint64_t timestamp_us;
+};
+
+
+H264Encoder::H264Encoder(int width, int height, int fps)
+    : width_(width), height_(height), fps_(fps) {
+  initialize();
+}
+
+H264Encoder::~H264Encoder() {
+  if (codec_ctx_) avcodec_free_context(&codec_ctx_);
+  if (frame_) av_frame_free(&frame_);
+  if (sws_ctx_) sws_freeContext(sws_ctx_);
+}
+
+void H264Encoder::initialize() {
+  const AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
+  if (!codec) throw std::runtime_error("找不到 H.264 编码器");
+
+  codec_ctx_ = avcodec_alloc_context3(codec);
+  if (!codec_ctx_) throw std::runtime_error("无法分配编码上下文");
+
+  codec_ctx_->width = width_;
+  codec_ctx_->height = height_;
+  codec_ctx_->time_base = AVRational{1, fps_};
+  codec_ctx_->framerate = AVRational{fps_, 1};
+  codec_ctx_->pix_fmt = AV_PIX_FMT_YUV420P;
+  codec_ctx_->bit_rate = 5000000;
+  codec_ctx_->gop_size = 10;
+  codec_ctx_->max_b_frames = 0;
+
+  AVDictionary* opts = nullptr;
+  av_dict_set(&opts, "preset", "ultrafast", 0);
+  av_dict_set(&opts, "tune", "zerolatency", 0);
+  av_dict_set(&opts, "profile", "baseline", 0);
+  av_dict_set(&opts, "x264-params", "annexb=0", 0);  // 关闭Annex-B
+
+  if (avcodec_open2(codec_ctx_, codec, &opts) < 0) {
+    av_dict_free(&opts);
+    throw std::runtime_error("无法打开编码器");
+  }
+  av_dict_free(&opts);
+
+  frame_ = av_frame_alloc();
+  frame_->format = codec_ctx_->pix_fmt;
+  frame_->width = codec_ctx_->width;
+  frame_->height = codec_ctx_->height;
+
+  if (av_frame_get_buffer(frame_, 32) < 0) {
+    throw std::runtime_error("分配帧缓冲失败");
+  }
+
+  sws_ctx_ = sws_getContext(width_, height_, AV_PIX_FMT_BGR24, width_, height_,
+                            AV_PIX_FMT_YUV420P, SWS_BILINEAR, nullptr, nullptr,
+                            nullptr);
+  if (!sws_ctx_) throw std::runtime_error("无法创建图像转换上下文");
+}
+
+EncodedFrame H264Encoder::encode(const cv::Mat& bgr_frame) {
+  if (!frame_) throw std::runtime_error("frame 未初始化");
+
+  if (av_frame_make_writable(frame_) < 0) {
+    throw std::runtime_error("frame 不可写");
+  }
+
+  const uint8_t* src_data[] = {bgr_frame.data};
+  int src_linesize[] = {static_cast<int>(bgr_frame.step)};
+
+  sws_scale(sws_ctx_, src_data, src_linesize, 0, height_, frame_->data,
+            frame_->linesize);
+
+  frame_->pts = pts_++;
+
+  if (avcodec_send_frame(codec_ctx_, frame_) < 0) {
+    throw std::runtime_error("发送帧失败");
+  }
+
+  AVPacket* pkt = av_packet_alloc();
+  EncodedFrame result;
+
+  while (true) {
+    int ret = avcodec_receive_packet(codec_ctx_, pkt);
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) break;
+    if (ret < 0) {
+      av_packet_free(&pkt);
+      throw std::runtime_error("接收编码包失败");
+    }
+
+    result.data.insert(result.data.end(),
+                       reinterpret_cast<std::byte*>(pkt->data),
+                       reinterpret_cast<std::byte*>(pkt->data + pkt->size));
+
+    av_packet_unref(pkt);
+  }
+
+  av_packet_free(&pkt);
+
+  auto now = std::chrono::steady_clock::now();
+  result.timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                            now.time_since_epoch())
+                            .count() -
+                        g_base_timestamp;
+
+  return result;
+}
+```
+
+### 
+
 推流功能的主要步骤
 1. 新建WEBRTCConnection类，封装PeerConnection，SDP，ICE，包括一些回调函数
 2. 利用websocket作为信令通道，交换sdp和ice，实现caller和callee的配对，sdp包括后续交换的一些规范，ice是ip与端口与内网穿透相关
