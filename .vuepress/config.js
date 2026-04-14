@@ -163,21 +163,21 @@ module.exports = {
 	},
 	plugins: [
 		// 浏览器cpu消耗太太太大了，一个miku就占50%了
-		[
-			"@vuepress-reco/vuepress-plugin-kan-ban-niang",
-			{
-				theme: ["miku"],
-				clean: true,
-				width: 175,
-				modelStyle: {
-					position: "fixed",
-					left: "0px",
-					bottom: "70px",
-					opacity: "0.9",
-					zIndex: 99999
-				}
-			}
-		],
+		// [
+		// 	"@vuepress-reco/vuepress-plugin-kan-ban-niang",
+		// 	{
+		// 		theme: ["miku"],
+		// 		clean: true,
+		// 		width: 175,
+		// 		modelStyle: {
+		// 			position: "fixed",
+		// 			left: "0px",
+		// 			bottom: "70px",
+		// 			opacity: "0.9",
+		// 			zIndex: 99999
+		// 		}
+		// 	}
+		// ],
 		[
 			"dynamic-title",
 			{
